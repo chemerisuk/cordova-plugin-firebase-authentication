@@ -1,0 +1,51 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android"
+           id="cordova-plugin-firebase-authentication"
+      version="0.10.0">
+
+    <name>cordova-plugin-firebase-authentication</name>
+    <description>Cordova plugin for Firebase Authentication</description>
+    <license>MIT</license>
+    <keywords>cordova</keywords>
+    <repo>https://github.com/chemerisuk/cordova-plugin-firebase-authentication</repo>
+    <issue>https://github.com/chemerisuk/cordova-plugin-firebase-authentication/issues</issue>
+
+    <js-module src="www/FirebaseAuthentication.js" name="FirebaseAuthentication">
+        <merges target="cordova.plugins.firebase.crash" />
+    </js-module>
+
+    <engines>
+        <engine name="cordova" version=">=3.5.0"/>
+    </engines>
+
+    <dependency id="cordova-plugin-firebase-analytics" version="~0.10.0"/>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="FirebaseAuthentication">
+                <param name="ios-package" value="FirebaseAuthenticationPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/FirebaseAuthenticationPlugin.h" />
+        <source-file src="src/ios/FirebaseAuthenticationPlugin.m" />
+
+        <pod id="Firebase/Auth"/>
+    </platform>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="FirebaseAuthentication">
+                <param name="android-package" value="by.chemerisuk.cordova.firebase.FirebaseAuthenticationPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <framework src="com.google.firebase:firebase-auth:11.0.+" />
+
+        <source-file src="src/android/FirebaseAuthenticationPlugin.java"
+            target-dir="src/by/chemerisuk/cordova/firebase/" />
+    </platform>
+
+</plugin>

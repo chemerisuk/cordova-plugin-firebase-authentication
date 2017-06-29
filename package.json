@@ -1,0 +1,31 @@
+{
+  "name": "cordova-plugin-firebase-authentication",
+  "version": "0.10.0",
+  "description": "Cordova plugin for Firebase Crash",
+  "cordova": {
+    "id": "cordova-plugin-firebase-authentication",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chemerisuk/cordova-plugin-firebase-authentication.git"
+  },
+  "author": "Maksim Chemerisuk <chemerisuk@gmail.com> (https://github.com/chemerisuk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chemerisuk/cordova-plugin-firebase-authentication/issues"
+  },
+  "homepage": "https://github.com/chemerisuk/cordova-plugin-firebase-authentication#readme",
+  "keywords": [
+    "cordova",
+    "firebase",
+    "authentication",
+    "analytics",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ]
+}
