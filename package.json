@@ -1,7 +1,7 @@
 {
   "name": "cordova-plugin-firebase-authentication",
   "version": "0.10.0",
-  "description": "Cordova plugin for Firebase Crash",
+  "description": "Cordova plugin for Firebase Authentication",
   "cordova": {
     "id": "cordova-plugin-firebase-authentication",
     "platforms": [

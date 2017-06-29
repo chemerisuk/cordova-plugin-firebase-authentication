@@ -11,7 +11,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <issue>https://github.com/chemerisuk/cordova-plugin-firebase-authentication/issues</issue>
 
     <js-module src="www/FirebaseAuthentication.js" name="FirebaseAuthentication">
-        <merges target="cordova.plugins.firebase.crash" />
+        <merges target="cordova.plugins.firebase.auth" />
     </js-module>
 
     <engines>
