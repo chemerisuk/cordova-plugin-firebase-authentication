@@ -15,7 +15,7 @@
 ### getIdToken(_forceRefresh_, _callback_, _errorCallback_)
 Returns a JWT token used to identify the user to a Firebase service.
 ```js
-window.cordova.plugins.firebase.auth.getIdToken(function(idToken) {
+cordova.plugins.firebase.auth.getIdToken(function(idToken) {
     // send token to server
 });
 ```
@@ -23,7 +23,7 @@ window.cordova.plugins.firebase.auth.getIdToken(function(idToken) {
 ### signInWithEmailAndPassword(_email_, _password_, _callback_, _errorCallback_)
 Asynchronously signs in using an email and password.
 ```js
-window.cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0rd", function(userInfo) {
+cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0rd", function(userInfo) {
     // user is signed in
 });
 ```

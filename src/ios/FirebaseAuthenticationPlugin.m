@@ -43,13 +43,13 @@
             if (error) {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
             } else {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@{
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{
                     @"uid": user.uid,
-                    @"displayName": user.displayName,
-                    @"email": user.email,
-                    @"phone": user.phoneNumber,
-                    @"photoURL": user.photoURL,
-                    @"providerId": user.providerID
+                    @"providerId": user.providerID,
+                    @"displayName": user.displayName ? user.displayName : @"",
+                    @"email": user.email ? user.email : @"",
+                    @"phone": user.phoneNumber ? user.phoneNumber : @"",
+                    @"photoURL": user.photoURL ? user.photoURL.absoluteString : @""
                 }];
             }
 
