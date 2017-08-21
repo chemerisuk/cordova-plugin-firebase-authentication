@@ -6,13 +6,13 @@
 @implementation FirebaseAuthenticationPlugin
 
 - (void)getIdToken:(CDVInvokedUrlCommand *)command {
-    bool forceRefresh = [[command.arguments objectAtIndex:0] boolValue];
+    BOOL forceRefresh = [[command.arguments objectAtIndex:0] boolValue];
 
     [self.commandDelegate runInBackground: ^{
         FIRUser *user = [FIRAuth auth].currentUser;
 
         if (user) {
-            [user getIDTokenWithCompletion:^(NSString *token, NSError *error) {
+            [user getIDTokenForcingRefresh:forceRefresh completion:^(NSString *token, NSError *error) {
                 CDVPluginResult *pluginResult;
 
                 if (error) {
