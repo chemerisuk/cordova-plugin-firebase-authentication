@@ -101,24 +101,46 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
 
     private void verifyPhoneNumber(String phoneNumber, long timeout, final CallbackContext callbackContext) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            phoneNumber, timeout, TimeUnit.MILLISECONDS, this.cordova.getActivity(),
+            phoneNumber, timeout, TimeUnit.MILLISECONDS, cordova.getActivity(),
             new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 @Override
                 public void onVerificationCompleted(PhoneAuthCredential credential) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
-                    if (user != null) {
-                        user.updatePhoneNumber(credential);
+                    if (user == null) {
+                        firebaseAuth.signInWithCredential(credential)
+                            .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        callbackContext.success();
+                                    } else {
+                                        callbackContext.error(task.getException().getMessage());
+                                    }
+                                }
+                            });
+                    } else {
+                        user.updatePhoneNumber(credential)
+                            .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        callbackContext.success();
+                                    } else {
+                                        callbackContext.error(task.getException().getMessage());
+                                    }
+                                }
+                            });
                     }
                 }
 
                 @Override
                 public void onCodeAutoRetrievalTimeOut(String verificationId) {
-                    callbackContext.error(verificationId);
+                    callbackContext.success(verificationId);
                 }
 
                 @Override
-                public void onVerificationFailed(FirebaseException exception) {
-                    callbackContext.error(exception.getMessage());
+                public void onVerificationFailed(FirebaseException e) {
+                    callbackContext.error(e.getMessage());
                 }
             }
         );
