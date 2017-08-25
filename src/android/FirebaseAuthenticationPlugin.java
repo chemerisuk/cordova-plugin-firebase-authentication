@@ -1,6 +1,7 @@
 package by.chemerisuk.cordova.firebase;
 
 import android.util.Log;
+import java.util.concurrent.TimeUnit;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -9,6 +10,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.FirebaseException;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
@@ -38,6 +42,10 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("signInWithEmailAndPassword")) {
             signInWithEmailAndPassword(args.getString(0), args.getString(1), callbackContext);
+
+            return true;
+        } else if (action.equals("verifyPhoneNumber")) {
+            verifyPhoneNumber(args.getString(0), args.getLong(1), callbackContext);
 
             return true;
         }
@@ -89,6 +97,31 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
                     });
             }
         });
+    }
+
+    private void verifyPhoneNumber(String phoneNumber, long timeout, final CallbackContext callbackContext) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+            phoneNumber, timeout, TimeUnit.MILLISECONDS, this.cordova.getActivity(),
+            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                @Override
+                public void onVerificationCompleted(PhoneAuthCredential credential) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        user.updatePhoneNumber(credential);
+                    }
+                }
+
+                @Override
+                public void onCodeAutoRetrievalTimeOut(String verificationId) {
+                    callbackContext.error(verificationId);
+                }
+
+                @Override
+                public void onVerificationFailed(FirebaseException exception) {
+                    callbackContext.error(exception.getMessage());
+                }
+            }
+        );
     }
 
     private JSONObject getProfileData(FirebaseUser user) {

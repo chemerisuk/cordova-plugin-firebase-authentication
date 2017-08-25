@@ -7,5 +7,8 @@ module.exports = {
     },
     signInWithEmailAndPassword: function(email, password, success, error) {
         exec(success, error, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
+    },
+    verifyPhoneNumber: function(phoneNumber, timeout, success, error) {
+        exec(success, error, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeout]);
     }
 };
