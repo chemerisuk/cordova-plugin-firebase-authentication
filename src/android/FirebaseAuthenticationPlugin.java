@@ -48,6 +48,10 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
             verifyPhoneNumber(args.getString(0), args.getLong(1), callbackContext);
 
             return true;
+        } else if (action.equals("signInWithVerificationId")) {
+            signInWithVerificationId(args.getString(0), args.getString(1), callbackContext);
+
+            return true;
         }
 
         return false;
@@ -107,17 +111,7 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
                 public void onVerificationCompleted(PhoneAuthCredential credential) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user == null) {
-                        firebaseAuth.signInWithCredential(credential)
-                            .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        callbackContext.success();
-                                    } else {
-                                        callbackContext.error(task.getException().getMessage());
-                                    }
-                                }
-                            });
+                        signInWithCredential(credential, callbackContext);
                     } else {
                         user.updatePhoneNumber(credential)
                             .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
@@ -144,6 +138,32 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
                 }
             }
         );
+    }
+
+    private void signInWithVerificationId(String verificationId, String code, final CallbackContext callbackContext) {
+        final PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                signInWithCredential(credential, callbackContext);
+            }
+        });
+    }
+
+    private void signInWithCredential(PhoneAuthCredential credential, final CallbackContext callbackContext) {
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = task.getResult().getUser();
+                        callbackContext.success(getProfileData(user));
+                    } else {
+                        callbackContext.error(task.getException().getMessage());
+                    }
+                }
+            });
     }
 
     private JSONObject getProfileData(FirebaseUser user) {
