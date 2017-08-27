@@ -13,5 +13,8 @@ module.exports = {
     },
     signInWithVerificationId: function(verificationId, code) {
         exec(success, error, PLUGIN_NAME, "signInWithVerificationId", [verificationId, code]);
+    },
+    signOut: function() {
+        exec(success, error, PLUGIN_NAME, "signOut", []);
     }
 };

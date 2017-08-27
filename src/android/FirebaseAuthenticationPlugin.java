@@ -52,6 +52,10 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
             signInWithVerificationId(args.getString(0), args.getString(1), callbackContext);
 
             return true;
+        } else if (action.equals("signOut")) {
+            signOut(callbackContext);
+
+            return true;
         }
 
         return false;
@@ -164,6 +168,12 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin {
                     }
                 }
             });
+    }
+
+    private void signOut(CallbackContext callbackContext) {
+        firebaseAuth.signOut();
+
+        callbackContext.success();
     }
 
     private JSONObject getProfileData(FirebaseUser user) {
