@@ -11,7 +11,7 @@ module.exports = {
     verifyPhoneNumber: function(phoneNumber, timeout, success, error) {
         exec(success, error, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeout]);
     },
-    signInWithVerificationId: function(verificationId, code) {
+    signInWithVerificationId: function(verificationId, code, success, error) {
         exec(success, error, PLUGIN_NAME, "signInWithVerificationId", [verificationId, code]);
     },
     signOut: function() {
