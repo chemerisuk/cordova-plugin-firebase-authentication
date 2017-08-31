@@ -9,6 +9,11 @@ module.exports = {
         exec(success, error, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
     },
     verifyPhoneNumber: function(phoneNumber, timeout, success, error) {
+        if (typeof timeout === "function") {
+            error = success;
+            success = timeout;
+        }
+
         exec(success, error, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeout]);
     },
     signInWithVerificationId: function(verificationId, code, success, error) {
