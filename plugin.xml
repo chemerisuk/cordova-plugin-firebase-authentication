@@ -31,7 +31,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <header-file src="src/ios/FirebaseAuthenticationPlugin.h" />
         <source-file src="src/ios/FirebaseAuthenticationPlugin.m" />
 
-        <framework src="FirebaseAuth" type="podspec" spec="~> 4.1.1"/>
+        <framework src="Firebase/Auth" type="podspec" spec="~> 4.1"/>
     </platform>
 
     <platform name="android">
