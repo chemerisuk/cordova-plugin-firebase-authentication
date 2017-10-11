@@ -50,7 +50,7 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
             signInWithVerificationId(args.getString(0), args.getString(1), callbackContext);
             return true;
         } else if (action.equals("verifyPhoneNumber")) {
-            verifyPhoneNumber(args.getString(0), args.getLong(1), callbackContext);
+            verifyPhoneNumber(args.getString(0), callbackContext);
             return true;
         } else if (action.equals("signOut")) {
             signOut(callbackContext);
@@ -141,11 +141,11 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         });
     }
 
-    private void verifyPhoneNumber(final String phoneNumber, final long timeout, final CallbackContext callbackContext) {
+    private void verifyPhoneNumber(final String phoneNumber, final CallbackContext callbackContext) {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                phoneAuthProvider.verifyPhoneNumber(phoneNumber, timeout, MILLISECONDS, cordova.getActivity(),
+                phoneAuthProvider.verifyPhoneNumber(phoneNumber, 0, MILLISECONDS, cordova.getActivity(),
                     new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                         @Override
                         public void onVerificationCompleted(PhoneAuthCredential credential) {
