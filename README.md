@@ -15,43 +15,44 @@ To use phone number authentication on iOS, your app must be able to receive sile
 - Android
 
 ## Methods
+Every method call returns a promise which is optionally fulfilled with an appropriate value.
 
-### getIdToken(_forceRefresh_, _callback_, _errorCallback_)
+### getIdToken(_forceRefresh_)
 Returns a JWT token used to identify the user to a Firebase service.
 ```js
-cordova.plugins.firebase.auth.getIdToken(function(idToken) {
+cordova.plugins.firebase.auth.getIdToken().then(function(idToken) {
     // send token to server
 });
 ```
 
-### signInWithEmailAndPassword(_email_, _password_, _callback_, _errorCallback_)
+### signInWithEmailAndPassword(_email_, _password_)
 Asynchronously signs in using an email and password.
 ```js
-cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0rd", function(userInfo) {
+cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0rd").then(function(userInfo) {
     // user is signed in
 });
 ```
 
-### verifyPhoneNumber(_phoneNumber_, _timeout_, _success_, _error_)
+### verifyPhoneNumber(_phoneNumber_)
 Starts the phone number verification process for the given phone number.
 ```js
-cordova.plugins.firebase.auth.signInWithEmailAndPassword("+123456789", 10000, function(verificationId) {
+cordova.plugins.firebase.auth.signInWithEmailAndPassword("+123456789").then(function(verificationId) {
     // pass verificationId to signInWithVerificationId
 });
 ```
 
-### signInWithVerificationId(_verificationId_, _smsCode_, _success_, _error_)
+### signInWithVerificationId(_verificationId_, _smsCode_)
 Asynchronously signs in using verificationId and 6-digit SMS code.
 ```js
-cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456", function(userInfo) {
+cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456").then(function(userInfo) {
     // user is signed in
 });
 ```
 
-### signOut(_success_, _error_)
+### signOut()
 Signs out the current user and clears it from the disk cache.
 ```js
-cordova.plugins.firebase.auth.signOut(function() {
+cordova.plugins.firebase.auth.signOut().then(function() {
     // user was signed out
 });
 ```
