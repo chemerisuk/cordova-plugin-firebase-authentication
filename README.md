@@ -36,7 +36,7 @@ cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0r
 ### verifyPhoneNumber(_phoneNumber_)
 Starts the phone number verification process for the given phone number.
 ```js
-cordova.plugins.firebase.auth.signInWithEmailAndPassword("+123456789").then(function(verificationId) {
+cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789").then(function(verificationId) {
     // pass verificationId to signInWithVerificationId
 });
 ```

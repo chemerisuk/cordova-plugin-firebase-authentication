@@ -155,6 +155,8 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                             } else {
                                 user.updatePhoneNumber(credential);
                             }
+
+                            callbackContext.success("");
                         }
 
                         @Override
