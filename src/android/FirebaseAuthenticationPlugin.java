@@ -15,6 +15,7 @@ import com.google.firebase.FirebaseException;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.PluginResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +24,7 @@ import org.json.JSONObject;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
-public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCompleteListener<AuthResult> {
+public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCompleteListener {
     private static final String TAG = "FirebaseAuthentication";
 
     private FirebaseAuth firebaseAuth;
@@ -86,17 +87,16 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
     }
 
     @Override
-    public void onComplete(Task<AuthResult> task) {
-        if (this.signinCallback == null) return;
+    public void onComplete(Task task) {
+        if (this.signinCallback != null) {
+            if (task.isSuccessful()) {
+                this.signinCallback.success(getProfileData(firebaseAuth.getCurrentUser()));
+            } else {
+                this.signinCallback.error(task.getException().getMessage());
+            }
 
-        if (task.isSuccessful()) {
-            FirebaseUser user = task.getResult().getUser();
-            this.signinCallback.success(getProfileData(user));
-        } else {
-            this.signinCallback.error(task.getException().getMessage());
+            this.signinCallback = null;
         }
-
-        this.signinCallback = null;
     }
 
     private void signInWithEmailAndPassword(final String email, final String password, CallbackContext callbackContext) throws JSONException {
@@ -114,31 +114,26 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
     private void signInWithVerificationId(final String verificationId, final String code, final CallbackContext callbackContext) {
         final PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
 
-        this.signinCallback = callbackContext;
-
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user == null) {
-                    firebaseAuth.signInWithCredential(credential)
-                        .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-                } else {
-                    user.updatePhoneNumber(credential)
-                        .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    callbackContext.success(getProfileData(firebaseAuth.getCurrentUser()));
-                                } else {
-                                    callbackContext.error(task.getException().getMessage());
-                                }
-                            }
-                        });
-                }
+                signInWithPhoneCredential(credential, callbackContext);
             }
         });
+    }
+
+    private void signInWithPhoneCredential(PhoneAuthCredential credential, CallbackContext callbackContext) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        this.signinCallback = callbackContext;
+
+        if (user == null) {
+            firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+        } else {
+            user.updatePhoneNumber(credential)
+                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+        }
     }
 
     private void verifyPhoneNumber(final String phoneNumber, final CallbackContext callbackContext) {
@@ -149,19 +144,15 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                     new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                         @Override
                         public void onVerificationCompleted(PhoneAuthCredential credential) {
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            if (user == null) {
-                                firebaseAuth.signInWithCredential(credential);
-                            } else {
-                                user.updatePhoneNumber(credential);
-                            }
-
-                            callbackContext.success("");
+                            signInWithPhoneCredential(credential, callbackContext);
                         }
 
                         @Override
                         public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                            callbackContext.success(verificationId);
+                            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, verificationId);
+                            // keep callback for optional onVerificationCompleted
+                            pluginResult.setKeepCallback(true);
+                            callbackContext.sendPluginResult(pluginResult);
                         }
 
                         @Override
