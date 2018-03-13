@@ -105,6 +105,21 @@
     }];
 }
 
+- (void)setLanguageCode:(CDVInvokedUrlCommand*)command {
+    NSString* languageCode = [command.arguments objectAtIndex:0];
+
+    [self.commandDelegate runInBackground: ^{
+        if (languageCode) {
+            [FIRAuth auth].languageCode = languageCode;
+        } else {
+            [[FIRAuth auth] useAppLanguage];
+        }
+
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 - (NSDictionary*)userToDictionary:(FIRUser *)user {
     return @{
         @"uid": user.uid,

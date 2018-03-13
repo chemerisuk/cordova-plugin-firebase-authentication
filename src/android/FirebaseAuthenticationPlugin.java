@@ -56,6 +56,9 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         } else if (action.equals("signOut")) {
             signOut(callbackContext);
             return true;
+        } else if (action.equals("setLanguageCode")) {
+            setLanguageCode(args.optString(0), callbackContext);
+            return true;
         }
 
         return false;
@@ -170,6 +173,21 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
             @Override
             public void run() {
                 firebaseAuth.signOut();
+
+                callbackContext.success();
+            }
+        });
+    }
+
+    private void setLanguageCode(final String languageCode, final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (languageCode == null) {
+                    firebaseAuth.useAppLanguage();
+                } else {
+                    firebaseAuth.setLanguageCode(languageCode);
+                }
 
                 callbackContext.success();
             }

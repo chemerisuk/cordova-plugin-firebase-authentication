@@ -7,5 +7,6 @@
 - (void)signInWithVerificationId:(CDVInvokedUrlCommand*)command;
 - (void)verifyPhoneNumber:(CDVInvokedUrlCommand*)command;
 - (void)signOut:(CDVInvokedUrlCommand*)command;
+- (void)setLanguageCode:(CDVInvokedUrlCommand*)command;
 
 @end

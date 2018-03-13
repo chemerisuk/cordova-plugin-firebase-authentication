@@ -26,5 +26,10 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "signOut", []);
         });
+    },
+    setLanguageCode: function(lang) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [lang]);
+        });
     }
 };
