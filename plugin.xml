@@ -35,7 +35,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </platform>
 
     <platform name="android">
-        <preference name="FIREBASE_VERSION" default="11.0.+"/>
+        <preference name="FIREBASE_VERSION" default="11.6.+"/>
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebaseAuthentication">
@@ -44,7 +44,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </feature>
         </config-file>
 
-        <dependency id="cordova-support-google-services" version="~1.0.0"/>
+        <dependency id="cordova-support-google-services" version="~1.1.0"/>
 
         <framework src="com.google.firebase:firebase-auth:$FIREBASE_VERSION" />
 
