@@ -196,8 +196,19 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         });
     }
 
-    private void setAuthStateChanged(boolean disable, CallbackContext callbackContext) {
+    private void setAuthStateChanged(final boolean disable, CallbackContext callbackContext) {
         this.authStateCallback = disable ? null : callbackContext;
+
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (disable) {
+                    firebaseAuth.removeAuthStateListener(FirebaseAuthenticationPlugin.this);
+                } else {
+                    firebaseAuth.addAuthStateListener(FirebaseAuthenticationPlugin.this);
+                }
+            }
+        });
     }
 
     @Override
