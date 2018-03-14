@@ -36,5 +36,12 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [null]);
         });
+    },
+    onAuthStateChanged: function(callback) {
+        exec(callback, null, PLUGIN_NAME, "onAuthStateChanged", [false]);
+
+        return function() {
+            exec(null, null, PLUGIN_NAME, "onAuthStateChanged", [true]);
+        };
     }
 };

@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -24,12 +25,13 @@ import org.json.JSONObject;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
-public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCompleteListener {
+public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCompleteListener, AuthStateListener {
     private static final String TAG = "FirebaseAuthentication";
 
     private FirebaseAuth firebaseAuth;
     private PhoneAuthProvider phoneAuthProvider;
     private CallbackContext signinCallback;
+    private CallbackContext authStateCallback;
 
     @Override
     protected void pluginInitialize() {
@@ -58,6 +60,9 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
             return true;
         } else if (action.equals("setLanguageCode")) {
             setLanguageCode(args.optString(0), callbackContext);
+            return true;
+        } else if (action.equals("onAuthStateChanged")) {
+            setAuthStateChanged(args.getBoolean(0), callbackContext);
             return true;
         }
 
@@ -115,20 +120,20 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
     }
 
     private void signInWithVerificationId(final String verificationId, final String code, final CallbackContext callbackContext) {
-        final PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+        this.signinCallback = callbackContext;
 
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                signInWithPhoneCredential(credential, callbackContext);
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+
+                signInWithPhoneCredential(credential);
             }
         });
     }
 
-    private void signInWithPhoneCredential(PhoneAuthCredential credential, CallbackContext callbackContext) {
+    private void signInWithPhoneCredential(PhoneAuthCredential credential) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        this.signinCallback = callbackContext;
 
         if (user == null) {
             firebaseAuth.signInWithCredential(credential)
@@ -147,15 +152,12 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                     new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                         @Override
                         public void onVerificationCompleted(PhoneAuthCredential credential) {
-                            signInWithPhoneCredential(credential, callbackContext);
+                            signInWithPhoneCredential(credential);
                         }
 
                         @Override
                         public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, verificationId);
-                            // keep callback for optional onVerificationCompleted
-                            pluginResult.setKeepCallback(true);
-                            callbackContext.sendPluginResult(pluginResult);
+                            callbackContext.success(verificationId);
                         }
 
                         @Override
@@ -192,6 +194,28 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                 callbackContext.success();
             }
         });
+    }
+
+    private void setAuthStateChanged(boolean disable, CallbackContext callbackContext) {
+        this.authStateCallback = disable ? null : callbackContext;
+    }
+
+    @Override
+    public void onAuthStateChanged(FirebaseAuth auth) {
+        if (this.authStateCallback != null) {
+            PluginResult pluginResult;
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+
+            if (user != null) {
+                pluginResult = new PluginResult(PluginResult.Status.OK, getProfileData(user));
+            } else {
+                pluginResult = new PluginResult(PluginResult.Status.OK, "");
+            }
+
+            pluginResult.setKeepCallback(true);
+
+            this.authStateCallback.sendPluginResult(pluginResult);
+        }
     }
 
     private static JSONObject getProfileData(FirebaseUser user) {
