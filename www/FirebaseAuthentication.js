@@ -27,9 +27,14 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "signOut", []);
         });
     },
-    setLanguageCode: function(lang) {
+    setLanguageCode: function(languageCode) {
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [lang]);
+            exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [languageCode]);
+        });
+    },
+    useAppLanguage: function() {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [null]);
         });
     }
 };
