@@ -12,9 +12,9 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
         });
     },
-    verifyPhoneNumber: function(phoneNumber) {
+    verifyPhoneNumber: function(phoneNumber, timeoutMillis) {
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber]);
+            exec(resolve, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);
         });
     },
     signInWithVerificationId: function(verificationId, code) {
