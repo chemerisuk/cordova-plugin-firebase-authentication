@@ -106,14 +106,14 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         });
     }
 
-    private void signInWithVerificationId(final String verificationId, final String code, final CallbackContext callbackContext) {
+    private void signInWithVerificationId(String verificationId, String code, final CallbackContext callbackContext) {
+        final PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+
         this.signinCallback = callbackContext;
 
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-
                 signInWithPhoneCredential(credential);
             }
         });
