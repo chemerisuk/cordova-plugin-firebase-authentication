@@ -4,9 +4,13 @@
 
 - (void)getIdToken:(CDVInvokedUrlCommand*)command;
 - (void)signInWithEmailAndPassword:(CDVInvokedUrlCommand*)command;
+- (void)signInWithGoogle:(CDVInvokedUrlCommand*)command;
+- (void)signInWithFacebook:(CDVInvokedUrlCommand*)command;
+- (void)signInWithTwitter:(CDVInvokedUrlCommand*)command;
 - (void)signInWithVerificationId:(CDVInvokedUrlCommand*)command;
 - (void)verifyPhoneNumber:(CDVInvokedUrlCommand*)command;
 - (void)signOut:(CDVInvokedUrlCommand*)command;
 - (void)setLanguageCode:(CDVInvokedUrlCommand*)command;
+- (void)useAppLanguage:(CDVInvokedUrlCommand*)command;
 
 @end
