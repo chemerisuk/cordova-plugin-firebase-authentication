@@ -6,12 +6,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
 
 import org.apache.cordova.CordovaPlugin;
@@ -48,6 +52,15 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
             return true;
         } else if (action.equals("signInWithEmailAndPassword")) {
             signInWithEmailAndPassword(args.getString(0), args.getString(1), callbackContext);
+            return true;
+        } else if (action.equals("signInWithGoogle")) {
+            signInWithGoogle(args.getString(0), args.getString(1), callbackContext);
+            return true;
+        } else if (action.equals("signInWithFacebook")) {
+            signInWithFacebook(args.getString(0), callbackContext);
+            return true;
+        } else if (action.equals("signInWithTwitter")) {
+            signInWithTwitter(args.getString(0), args.getString(1), callbackContext);
             return true;
         } else if (action.equals("signInWithVerificationId")) {
             signInWithVerificationId(args.getString(0), args.getString(1), callbackContext);
@@ -94,13 +107,55 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         });
     }
 
-    private void signInWithEmailAndPassword(final String email, final String password, CallbackContext callbackContext) throws JSONException {
+    private void signInWithEmailAndPassword(final String email, final String password, CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
                 firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+            }
+        });
+    }
+
+    private void signInWithGoogle(String idToken, String accessToken, CallbackContext callbackContext) {
+        final AuthCredential credential = GoogleAuthProvider.getCredential(idToken, accessToken);
+
+        this.signinCallback = callbackContext;
+
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                firebaseAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+            }
+        });
+    }
+
+    private void signInWithFacebook(String accessToken, CallbackContext callbackContext) {
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken);
+
+        this.signinCallback = callbackContext;
+
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                firebaseAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+            }
+        });
+    }
+
+    private void signInWithTwitter(String token, String secret, CallbackContext callbackContext) {
+        final AuthCredential credential = TwitterAuthProvider.getCredential(token, secret);
+
+        this.signinCallback = callbackContext;
+
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                firebaseAuth.signInWithCredential(credential)
                     .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
             }
         });

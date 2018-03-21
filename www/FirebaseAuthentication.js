@@ -12,6 +12,21 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
         });
     },
+    signInWithGoogle: function(idToken, accessToken) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInWithGoogle", [idToken, accessToken]);
+        });
+    },
+    signInWithFacebook: function(accessToken) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInWithFacebook", [accessToken]);
+        });
+    },
+    signInWithTwitter: function(token, secret) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInWithTwitter", [token, secret]);
+        });
+    },
     verifyPhoneNumber: function(phoneNumber, timeoutMillis) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);
