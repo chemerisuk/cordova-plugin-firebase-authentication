@@ -35,6 +35,9 @@ cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0r
 
 ### verifyPhoneNumber(_phoneNumber_)
 Starts the phone number verification process for the given phone number.
+
+NOTE: Android supports auto-verify and instant device verification. Therefore in that cases it doesn't make sense to ask for sms code. It's recommended to register `onAuthStateChanged` callback to be notified on auto sign-in.
+
 ```js
 cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789").then(function(verificationId) {
     // pass verificationId to signInWithVerificationId
@@ -49,6 +52,37 @@ cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456")
 });
 ```
 
+### signInWithGoogle(_idToken_, _accessToken_)
+Uses Google's _idToken_ and _accessToken_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/google-signin) and [iOS](https://firebase.google.com/docs/auth/ios/google-signin).
+
+### signInWithFacebook(_accessToken_)
+Uses Facebook's _accessToken_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/facebook-login) and [iOS](https://firebase.google.com/docs/auth/ios/facebook-login).
+
+### signInWithTwitter(_token_, _secret_)
+Uses Twitter's _token_ and _secret_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/twitter-login) and [iOS](https://firebase.google.com/docs/auth/ios/twitter-login).  
+
+### onAuthStateChanged(_callback_)
+Registers a block as an auth state did change listener. To be invoked when:
+* The block is registered as a listener,
+* A user with a different UID from the current user has signed in, or
+* The current user has signed out.
+
+```js
+cordova.plugins.firebase.auth.onAuthStateChanged(function(userInfo) {
+    if (userInfo && userInfo.uid) {
+        // user was signed in
+    } else {
+        // user was signed out
+    }
+});
+```
+
+### setLanguageCode(_languageCode_)
+Set's the current user language code. The string used to set this property must be a language code that follows BCP 47.
+
+### useAppLanguage()
+Sets languageCode to the app’s current language.
+
 ### signOut()
 Signs out the current user and clears it from the disk cache.
 ```js
@@ -59,5 +93,5 @@ cordova.plugins.firebase.auth.signOut().then(function() {
 
 [npm-url]: https://www.npmjs.com/package/cordova-plugin-firebase-authentication
 [npm-version]: https://img.shields.io/npm/v/cordova-plugin-firebase-authentication.svg
-[npm-downloads]: https://img.shields.io/npm/dt/cordova-plugin-firebase-authentication.svg
+[npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-firebase-authentication.svg
 
