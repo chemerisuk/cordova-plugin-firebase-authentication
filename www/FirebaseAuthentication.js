@@ -7,6 +7,11 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "getIdToken", [forceRefresh]);
         });
     },
+    createUserWithEmailAndPassword: function(email, password) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "createUserWithEmailAndPassword", [email, password]);
+        });
+    },
     signInWithEmailAndPassword: function(email, password) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
