@@ -12,6 +12,11 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "createUserWithEmailAndPassword", [email, password]);
         });
     },
+    sendEmailVerification: function() {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "sendEmailVerification", []);
+        });
+    },
     signInWithEmailAndPassword: function(email, password) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);

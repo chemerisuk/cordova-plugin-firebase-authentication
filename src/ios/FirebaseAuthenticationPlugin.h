@@ -4,6 +4,7 @@
 
 - (void)getIdToken:(CDVInvokedUrlCommand*)command;
 - (void)createUserWithEmailAndPassword:(CDVInvokedUrlCommand*)command;
+- (void)sendEmailVerification:(CDVInvokedUrlCommand*)command;
 - (void)signInWithEmailAndPassword:(CDVInvokedUrlCommand*)command;
 - (void)signInWithGoogle:(CDVInvokedUrlCommand*)command;
 - (void)signInWithFacebook:(CDVInvokedUrlCommand*)command;
