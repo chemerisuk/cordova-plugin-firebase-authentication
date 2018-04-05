@@ -25,6 +25,24 @@ cordova.plugins.firebase.auth.getIdToken().then(function(idToken) {
 });
 ```
 
+### createUserWithEmailAndPassword(_email_, _password_)
+Tries to create a new user account with the given email address and password.
+```js
+cordova.plugins.firebase.auth.createUserWithEmailAndPassword("my@mail.com", "pa55w0rd");
+```
+
+### sendEmailVerification()
+Initiates email verification for the current user.
+```js
+cordova.plugins.firebase.auth.sendEmailVerification();
+```
+
+### sendPasswordResetEmail(_email_)
+Triggers the Firebase Authentication backend to send a password-reset email to the given email address, which must correspond to an existing user of your app.
+```js
+cordova.plugins.firebase.auth.sendPasswordResetEmail("my@mail.com");
+```
+
 ### signInWithEmailAndPassword(_email_, _password_)
 Asynchronously signs in using an email and password.
 ```js
@@ -48,6 +66,14 @@ cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789").then(function(veri
 Asynchronously signs in using verificationId and 6-digit SMS code.
 ```js
 cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456").then(function(userInfo) {
+    // user is signed in
+});
+```
+
+### signInAnonymously()
+Create and use temporary anonymous account to authenticate with Firebase. 
+```js
+cordova.plugins.firebase.auth.signInAnonymously().then(function(userInfo) {
     // user is signed in
 });
 ```
