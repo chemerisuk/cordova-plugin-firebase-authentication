@@ -191,36 +191,18 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
     }
 
     private void signInWithGoogle(String idToken, String accessToken, CallbackContext callbackContext) {
-        final AuthCredential credential = GoogleAuthProvider.getCredential(idToken, accessToken);
-
-        this.signinCallback = callbackContext;
-
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                firebaseAuth.signInWithCredential(credential)
-                    .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-            }
-        });
+        signInWithCredential(GoogleAuthProvider.getCredential(idToken, accessToken), callbackContext);
     }
 
     private void signInWithFacebook(String accessToken, CallbackContext callbackContext) {
-        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken);
-
-        this.signinCallback = callbackContext;
-
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                firebaseAuth.signInWithCredential(credential)
-                    .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-            }
-        });
+        signInWithCredential(FacebookAuthProvider.getCredential(accessToken), callbackContext);
     }
 
     private void signInWithTwitter(String token, String secret, CallbackContext callbackContext) {
-        final AuthCredential credential = TwitterAuthProvider.getCredential(token, secret);
+        signInWithCredential(TwitterAuthProvider.getCredential(token, secret), callbackContext);
+    }
 
+    private void signInWithCredential(final AuthCredential credential, CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         cordova.getThreadPool().execute(new Runnable() {
@@ -271,6 +253,18 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         });
     }
 
+    private void signInWithPhoneCredential(PhoneAuthCredential credential) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        if (user == null) {
+            firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+        } else {
+            user.updatePhoneNumber(credential)
+                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+        }
+    }
+
     private void signOut(final CallbackContext callbackContext) {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
@@ -310,18 +304,6 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                 }
             }
         });
-    }
-
-    private void signInWithPhoneCredential(PhoneAuthCredential credential) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        if (user == null) {
-            firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-        } else {
-            user.updatePhoneNumber(credential)
-                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-        }
     }
 
     @Override
