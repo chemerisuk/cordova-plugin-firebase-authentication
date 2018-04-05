@@ -62,6 +62,9 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         } else if (action.equals("signInWithEmailAndPassword")) {
             signInWithEmailAndPassword(args.getString(0), args.getString(1), callbackContext);
             return true;
+        } else if (action.equals("signInAnonymously")) {
+            signInAnonymously(callbackContext);
+            return true;
         } else if (action.equals("signInWithGoogle")) {
             signInWithGoogle(args.getString(0), args.getString(1), callbackContext);
             return true;
@@ -168,6 +171,18 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                             }
                         }
                     });
+            }
+        });
+    }
+
+    private void signInAnonymously(CallbackContext callbackContext) {
+        this.signinCallback = callbackContext;
+
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                firebaseAuth.signInAnonymously()
+                    .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
             }
         });
     }

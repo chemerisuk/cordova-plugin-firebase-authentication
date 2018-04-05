@@ -27,6 +27,11 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
         });
     },
+    signInAnonymously: function(email, password) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInAnonymously", []);
+        });
+    },
     signInWithGoogle: function(idToken, accessToken) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "signInWithGoogle", [idToken, accessToken]);

@@ -7,6 +7,7 @@
 - (void)sendEmailVerification:(CDVInvokedUrlCommand*)command;
 - (void)sendPasswordResetEmail:(CDVInvokedUrlCommand*)command;
 - (void)signInWithEmailAndPassword:(CDVInvokedUrlCommand*)command;
+- (void)signInAnonymously:(CDVInvokedUrlCommand*)command;
 - (void)signInWithGoogle:(CDVInvokedUrlCommand*)command;
 - (void)signInWithFacebook:(CDVInvokedUrlCommand*)command;
 - (void)signInWithTwitter:(CDVInvokedUrlCommand*)command;

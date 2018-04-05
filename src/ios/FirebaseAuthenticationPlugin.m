@@ -108,6 +108,21 @@
     }];
 }
 
+- (void)signInAnonymously:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground: ^{
+        [[FIRAuth auth] signInAnonymouslyWithCompletion:^(FIRUser *user, NSError *error) {
+            CDVPluginResult *pluginResult;
+            if (error) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+            }
+
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+    }];
+}
+
 - (void)signInWithGoogle:(CDVInvokedUrlCommand *)command {
     NSString* idToken = [command.arguments objectAtIndex:0];
     NSString* accessToken = [command.arguments objectAtIndex:1];
