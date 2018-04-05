@@ -56,6 +56,9 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         } else if (action.equals("sendEmailVerification")) {
             sendEmailVerification(callbackContext);
             return true;
+        } else if (action.equals("sendPasswordResetEmail")) {
+            sendPasswordResetEmail(args.getString(0), callbackContext);
+            return true;
         } else if (action.equals("signInWithEmailAndPassword")) {
             signInWithEmailAndPassword(args.getString(0), args.getString(1), callbackContext);
             return true;
@@ -135,6 +138,31 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
                     callbackContext.error("User is not authorized");
                 } else {
                     user.sendEmailVerification()
+                        .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    callbackContext.success();
+                                } else {
+                                    callbackContext.error(task.getException().getMessage());
+                                }
+                            }
+                        });
+                }
+            }
+        });
+    }
+
+    private void sendPasswordResetEmail(final String email, final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user == null) {
+                    callbackContext.error("User is not authorized");
+                } else {
+                    user.sendPasswordResetEmail(email)
                         .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(Task<Void> task) {

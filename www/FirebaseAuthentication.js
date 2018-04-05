@@ -17,6 +17,11 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "sendEmailVerification", []);
         });
     },
+    sendPasswordResetEmail: function(email) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "sendPasswordResetEmail", [email]);
+        });
+    },
     signInWithEmailAndPassword: function(email, password) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "signInWithEmailAndPassword", [email, password]);
