@@ -157,23 +157,17 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user == null) {
-                    callbackContext.error("User is not authorized");
-                } else {
-                    user.sendPasswordResetEmail(email)
-                        .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    callbackContext.success();
-                                } else {
-                                    callbackContext.error(task.getException().getMessage());
-                                }
+                firebaseAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                callbackContext.success();
+                            } else {
+                                callbackContext.error(task.getException().getMessage());
                             }
-                        });
-                }
+                        }
+                    });
             }
         });
     }

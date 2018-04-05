@@ -75,23 +75,16 @@
     NSString* email = [command.arguments objectAtIndex:0];
 
     [self.commandDelegate runInBackground: ^{
-        FIRUser *currentUser = [FIRAuth auth].currentUser;
+        [[FIRAuth auth] sendPasswordResetWithEmail:email completion:^(NSError *_Nullable error) {
+            CDVPluginResult *pluginResult;
+            if (error) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+            }
 
-        if (currentUser) {
-            [currentUser sendPasswordResetWithEmail:email completion:^(NSError *_Nullable error) {
-                CDVPluginResult *pluginResult;
-                if (error) {
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
-                } else {
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-                }
-
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            }];
-        } else {
-            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"User must be signed in"];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        }
+        }];
     }];
 }
 
