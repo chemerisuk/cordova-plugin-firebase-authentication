@@ -48,7 +48,7 @@ public class FirebaseAuthenticationPlugin extends CordovaPlugin implements OnCom
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("getIdToken")) {
-            getIdToken(args.getBoolean(0), callbackContext);
+            getIdToken(args.get(0).toString().equals("true"), callbackContext);
             return true;
         } else if (action.equals("createUserWithEmailAndPassword")) {
             createUserWithEmailAndPassword(args.getString(0), args.getString(1), callbackContext);
