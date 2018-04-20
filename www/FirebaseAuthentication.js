@@ -4,6 +4,8 @@ var PLUGIN_NAME = "FirebaseAuthentication";
 module.exports = {
     getIdToken: function(forceRefresh) {
         return new Promise(function(resolve, reject) {
+            if (forceRefresh == null) forceRefresh = false;
+
             exec(resolve, reject, PLUGIN_NAME, "getIdToken", [forceRefresh]);
         });
     },
