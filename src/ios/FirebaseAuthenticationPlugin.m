@@ -6,10 +6,11 @@
 @implementation FirebaseAuthenticationPlugin
 
 - (void)pluginInitialize {
-        NSLog(@"Starting Firebase Authentication plugin");
-       if(![FIRApp defaultApp]) {
-            [FIRApp configure];
-       }
+    NSLog(@"Starting Firebase Authentication plugin");
+
+    if(![FIRApp defaultApp]) {
+        [FIRApp configure];
+    }
 }
 
 - (void)getIdToken:(CDVInvokedUrlCommand *)command {
@@ -225,6 +226,7 @@
 
     [self.commandDelegate runInBackground: ^{
         [[FIRPhoneAuthProvider provider] verifyPhoneNumber:phoneNumber
+                                                UIDelegate:nil
                                                 completion:^(NSString* verificationId, NSError* error) {
             CDVPluginResult *pluginResult;
             if (error) {
