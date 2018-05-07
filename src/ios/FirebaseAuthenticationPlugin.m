@@ -1,9 +1,16 @@
 #import "FirebaseAuthenticationPlugin.h"
 
+@import Firebase;
 @import FirebaseAuth;
 
-
 @implementation FirebaseAuthenticationPlugin
+
+- (void)pluginInitialize {
+        NSLog(@"Starting Firebase Authentication plugin");
+       if(![FIRApp defaultApp]) {
+            [FIRApp configure];
+       }
+}
 
 - (void)getIdToken:(CDVInvokedUrlCommand *)command {
     BOOL forceRefresh = [[command.arguments objectAtIndex:0] boolValue];
