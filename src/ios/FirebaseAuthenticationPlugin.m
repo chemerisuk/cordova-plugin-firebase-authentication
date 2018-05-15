@@ -42,12 +42,12 @@
     [self.commandDelegate runInBackground: ^{
         [[FIRAuth auth] createUserWithEmail:email
                                    password:password
-                                 completion:^(FIRUser *user, NSError *error) {
+                                 completion:^(FIRAuthDataResult *result, NSError *error) {
             CDVPluginResult *pluginResult;
             if (error) {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
             } else {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:result.user]];
             }
 
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -101,12 +101,12 @@
     [self.commandDelegate runInBackground: ^{
         [[FIRAuth auth] signInWithEmail:email
                                password:password
-                             completion:^(FIRUser *user, NSError *error) {
+                             completion:^(FIRAuthDataResult *result, NSError *error) {
             CDVPluginResult *pluginResult;
             if (error) {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
             } else {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:result.user]];
             }
 
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -116,12 +116,12 @@
 
 - (void)signInAnonymously:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground: ^{
-        [[FIRAuth auth] signInAnonymouslyWithCompletion:^(FIRUser *user, NSError *error) {
+        [[FIRAuth auth] signInAnonymouslyWithCompletion:^(FIRAuthDataResult *result, NSError *error) {
             CDVPluginResult *pluginResult;
             if (error) {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
             } else {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:result.user]];
             }
 
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
