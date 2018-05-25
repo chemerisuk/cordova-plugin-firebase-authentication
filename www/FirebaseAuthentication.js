@@ -75,10 +75,10 @@ module.exports = {
         });
     },
     onAuthStateChanged: function(callback) {
-        exec(callback, null, PLUGIN_NAME, "onAuthStateChanged", [false]);
+        exec(callback, null, PLUGIN_NAME, "setAuthStateChanged", [false]);
 
         return function() {
-            exec(null, null, PLUGIN_NAME, "onAuthStateChanged", [true]);
+            exec(null, null, PLUGIN_NAME, "setAuthStateChanged", [true]);
         };
     }
 };
