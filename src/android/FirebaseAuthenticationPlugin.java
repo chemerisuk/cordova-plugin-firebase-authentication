@@ -47,7 +47,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void getIdToken(boolean forceRefresh, CallbackContext callbackContext) {
+    private void getIdToken(boolean forceRefresh, final CallbackContext callbackContext) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         if (user == null) {
@@ -68,7 +68,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void createUserWithEmailAndPassword(String email, String password, CallbackContext callbackContext) {
+    private void createUserWithEmailAndPassword(String email, String password, final CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -112,7 +112,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void signInAnonymously(CallbackContext callbackContext) {
+    private void signInAnonymously(final CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         firebaseAuth.signInAnonymously()
@@ -120,7 +120,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void signInWithEmailAndPassword(String email, String password, CallbackContext callbackContext) {
+    private void signInWithEmailAndPassword(String email, String password, final CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
@@ -128,21 +128,21 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void signInWithGoogle(String idToken, String accessToken, CallbackContext callbackContext) {
+    private void signInWithGoogle(String idToken, String accessToken, final CallbackContext callbackContext) {
         signInWithCredential(GoogleAuthProvider.getCredential(idToken, accessToken), callbackContext);
     }
 
     @CordovaMethod
-    private void signInWithFacebook(String accessToken, CallbackContext callbackContext) {
+    private void signInWithFacebook(String accessToken, final CallbackContext callbackContext) {
         signInWithCredential(FacebookAuthProvider.getCredential(accessToken), callbackContext);
     }
 
     @CordovaMethod
-    private void signInWithTwitter(String token, String secret, CallbackContext callbackContext) {
+    private void signInWithTwitter(String token, String secret, final CallbackContext callbackContext) {
         signInWithCredential(TwitterAuthProvider.getCredential(token, secret), callbackContext);
     }
 
-    private void signInWithCredential(final AuthCredential credential, CallbackContext callbackContext) {
+    private void signInWithCredential(final AuthCredential credential, final CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         firebaseAuth.signInWithCredential(credential)
@@ -150,7 +150,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void signInWithVerificationId(String verificationId, String code, CallbackContext callbackContext) {
+    private void signInWithVerificationId(String verificationId, String code, final CallbackContext callbackContext) {
         this.signinCallback = callbackContext;
 
         signInWithPhoneCredential(PhoneAuthProvider.getCredential(verificationId, code));
@@ -191,14 +191,14 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void signOut(CallbackContext callbackContext) {
+    private void signOut(final CallbackContext callbackContext) {
         firebaseAuth.signOut();
 
         callbackContext.success();
     }
 
     @CordovaMethod
-    private void setLanguageCode(String languageCode, CallbackContext callbackContext) {
+    private void setLanguageCode(String languageCode, final CallbackContext callbackContext) {
         if (languageCode == null) {
             firebaseAuth.useAppLanguage();
         } else {
@@ -209,7 +209,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void setAuthStateChanged(boolean disable, CallbackContext callbackContext) {
+    private void setAuthStateChanged(boolean disable, final CallbackContext callbackContext) {
         this.authStateCallback = disable ? null : callbackContext;
 
         if (disable) {
