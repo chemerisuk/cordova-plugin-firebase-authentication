@@ -47,7 +47,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void getIdToken(boolean forceRefresh, CallbackContext callbackContext) {
+    private void getIdToken(boolean forceRefresh, final CallbackContext callbackContext) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         if (user == null) {
