@@ -213,22 +213,14 @@
 
 - (void)setLanguageCode:(CDVInvokedUrlCommand*)command {
     NSString* languageCode = [command.arguments objectAtIndex:0];
-
-    [self.commandDelegate runInBackground: ^{
+    if (languageCode) {
         [FIRAuth auth].languageCode = languageCode;
-
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
-}
-
-- (void)useAppLanguage:(CDVInvokedUrlCommand*)command {
-    [self.commandDelegate runInBackground: ^{
+    } else {
         [[FIRAuth auth] useAppLanguage];
+    }
 
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (CDVPluginResult*) createAuthResult:(FIRAuthDataResult*)result withError:(NSError*)error {
