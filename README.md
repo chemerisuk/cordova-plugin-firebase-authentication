@@ -51,13 +51,15 @@ cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0r
 });
 ```
 
-### verifyPhoneNumber(_phoneNumber_)
+### verifyPhoneNumber(_phoneNumber_, _timeout_)
 Starts the phone number verification process for the given phone number.
 
-NOTE: Android supports auto-verify and instant device verification. Therefore in that cases it doesn't make sense to ask for sms code. It's recommended to register `onAuthStateChanged` callback to be notified on auto sign-in.
+NOTE: Android supports auto-verify and instant device verification. Therefore in that cases it doesn't make sense to ask for sms code. It's recommended to register `onAuthStateChanged` callback to be notified on auto sign-in. 
+
+_timeout_ [milliseconds] is the maximum amount of time you are willing to wait for SMS auto-retrieval to be completed by the library. Maximum allowed value is 2 minutes. Use 0 to disable SMS-auto-retrieval. If you specify a positive value less than 30 seconds, library will default to 30 seconds.
 
 ```js
-cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789").then(function(verificationId) {
+cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789", 30000).then(function(verificationId) {
     // pass verificationId to signInWithVerificationId
 });
 ```
