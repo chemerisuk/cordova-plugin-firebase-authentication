@@ -83,10 +83,16 @@ cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789", 30000, (success) {
         if (success.type === 'onCodeSent') {
             // succeess.verificationId = verificationId
             // succeess.SMS = 'undefined'
+            // Save the verification id here.
         } else if (success.type === 'onVerificationCompleted') {
             // succeess.verificationId = undefined
             if (succeess.SMS !== null) {
                 // succeess.SMS = '732748' Login using SMS code.
+                // If you want to log in using the web version of firebase:
+                let signInCredential = firebase.auth.PhoneAuthProvider.credential(savedVerificationId, succeess.SMS)
+                auth.signInAndRetrieveDataWithCredential(signInCredential).then((user) => {})
+                // OR if you want to log in natively:
+                cordova.plugins.firebase.auth.signInWithVerificationId(savedVerificationId, succeess.SMS)
             } else {
                 // Instant verification took place. To login please call signInWithPhoneAutoVerification
                 cordova.plugins.firebase.auth.signInWithPhoneAutoVerification() // This is the only acceptable place to call this function.
@@ -102,6 +108,7 @@ cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789", 30000, (success) {
     }
 });
 ```
+
 
 ### signInWithPhoneAutoVerification()
 Signs user in after instant verification. Refer to the example in `verifyPhoneNumber` for usage instructions. 
