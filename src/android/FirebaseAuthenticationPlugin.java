@@ -18,6 +18,10 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
@@ -26,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implements OnCompleteListener, AuthStateListener {
@@ -33,6 +39,8 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
     private FirebaseAuth firebaseAuth;
     private PhoneAuthProvider phoneAuthProvider;
+    private PhoneAuthProvider.ForceResendingToken mForceResendingTokenStore;
+    private PhoneAuthCredential mCredential;
     private CallbackContext signinCallback;
     private CallbackContext authStateCallback;
 
@@ -42,6 +50,8 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.phoneAuthProvider = PhoneAuthProvider.getInstance();
+        this.mForceResendingTokenStore = null;
+        this.mCredential = null;
     }
 
     @CordovaMethod
@@ -156,24 +166,76 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
     @CordovaMethod
     private void verifyPhoneNumber(String phoneNumber, long timeoutMillis, final CallbackContext callbackContext) {
-        phoneAuthProvider.verifyPhoneNumber(phoneNumber, timeoutMillis, MILLISECONDS, cordova.getActivity(),
-            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                @Override
-                public void onVerificationCompleted(PhoneAuthCredential credential) {
-                    signInWithPhoneCredential(credential);
+        PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential credential) {
+                if (credential.getSmsCode() == null) {
+                    mCredential = credential;
                 }
-
-                @Override
-                public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                    callbackContext.success(verificationId);
-                }
-
-                @Override
-                public void onVerificationFailed(FirebaseException e) {
-                    callbackContext.error(e.getMessage());
-                }
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, getVerifyPhoneNumberCallbackMap("onVerificationCompleted", null, credential));
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
             }
-        );
+
+            @Override
+            public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                mForceResendingTokenStore = forceResendingToken;
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, getVerifyPhoneNumberCallbackMap("onCodeSent", verificationId, null));
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
+            }
+
+            @Override
+            public void onVerificationFailed(FirebaseException e) {
+                callbackContext.error(getVerifyPhoneNumberExceptionMap(e));
+            }
+        };
+        if (mForceResendingTokenStore != null) {
+            phoneAuthProvider.verifyPhoneNumber(phoneNumber, timeoutMillis, MILLISECONDS, cordova.getActivity(), verificationCallbacks, mForceResendingTokenStore);
+        } else {
+            phoneAuthProvider.verifyPhoneNumber(phoneNumber, timeoutMillis, MILLISECONDS, cordova.getActivity(), verificationCallbacks);
+        }
+    }
+
+    private static JSONObject getVerifyPhoneNumberCallbackMap(String type, String verificationId, PhoneAuthCredential credential) {
+        JSONObject callbackMap = new JSONObject();
+
+        try {
+            callbackMap.put("type", type);
+            if (credential != null) {
+                callbackMap.put("SMS", credential.getSmsCode());
+            } else {
+                callbackMap.put("verificationId", verificationId);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Fail to process getVerifyPhoneNumberCallbackMap", e);
+        }
+        
+        return callbackMap;
+    }
+
+    private static JSONObject getVerifyPhoneNumberExceptionMap(FirebaseException e) {
+        JSONObject exceptionMap = new JSONObject();
+
+        String errorCode = "verifyPhoneNumberError";
+        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            errorCode = "invalidCredential";
+        } else if (e instanceof FirebaseAuthException) {
+            errorCode = "firebaseAuth";
+        } else if (e instanceof FirebaseTooManyRequestsException) {
+            errorCode = "quotaExceeded";
+        } else if (e instanceof FirebaseApiNotAvailableException) {
+            errorCode = "apiNotAvailable";
+        }
+
+        try {
+            exceptionMap.put("code", errorCode);
+            exceptionMap.put("message", e.getMessage());
+        } catch (JSONException e1) {
+            Log.e(TAG, "Fail to process getVerifyPhoneNumberExceptionMap", e);
+        }
+
+        return exceptionMap;
     }
 
     private void signInWithPhoneCredential(PhoneAuthCredential credential) {
@@ -185,6 +247,16 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
         } else {
             user.updatePhoneNumber(credential)
                 .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
+        }
+    }
+
+    @CordovaMethod
+    private void signInWithPhoneAutoVerification(final CallbackContext callbackContext) {
+        if (mCredential != null) {
+            signInWithPhoneCredential(mCredential);
+            callbackContext.success();
+        } else {
+            callbackContext.error("No credential present.");
         }
     }
 

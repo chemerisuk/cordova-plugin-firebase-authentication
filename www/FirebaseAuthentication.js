@@ -49,14 +49,19 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "signInWithTwitter", [token, secret]);
         });
     },
-    verifyPhoneNumber: function(phoneNumber, timeoutMillis) {
-        return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);
-        });
+    verifyPhoneNumber: function(phoneNumber, timeoutMillis, success, failure) {
+        // return new Promise(function(resolve, reject) {
+        exec(success, failure, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);
+        // });
     },
     signInWithVerificationId: function(verificationId, code) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "signInWithVerificationId", [verificationId, code]);
+        });
+    },
+    signInWithPhoneAutoVerification: function() {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInWithPhoneAutoVerification", []);
         });
     },
     signOut: function() {
