@@ -1,6 +1,12 @@
 #import "FirebaseAuthenticationPlugin.h"
 @import Firebase;
 
+@interface FirebaseAuthenticationPlugin() {
+    NSString* authChangedCallbackId;
+}
+@property(strong, nonatomic) FIRAuthStateDidChangeListenerHandle handle;
+@end
+
 @implementation FirebaseAuthenticationPlugin
 
 - (void)pluginInitialize {
@@ -8,6 +14,17 @@
 
     if(![FIRApp defaultApp]) {
         [FIRApp configure];
+    }
+}
+
+- (void)getCurrentUser:(CDVInvokedUrlCommand *)command {
+    FIRUser *user = [FIRAuth auth].currentUser;
+    if (user) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    } else {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"User must be signed in"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
 }
 
@@ -196,6 +213,28 @@
 
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)setAuthStateChanged:(CDVInvokedUrlCommand*)command {
+    BOOL disable = [[command.arguments objectAtIndex:0] boolValue];
+    if (_handle) {
+        // [START remove_auth_listener]
+        [[FIRAuth auth] removeAuthStateDidChangeListener:_handle];
+        self.handle = nil;
+        // [END remove_auth_listener]
+    }
+    if (!disable) {
+        authChangedCallbackId = [command.callbackId copy];
+        // [START auth_listener]
+        self.handle = [[FIRAuth auth]
+            addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+                // [START_EXCLUDE]
+                CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+                [self.commandDelegate sendPluginResult:pluginResult callbackId:authChangedCallbackId];
+                // [END_EXCLUDE]
+            }];
+        // [END auth_listener]
+    }
 }
 
 - (CDVPluginResult*) createAuthResult:(FIRAuthDataResult*)result withError:(NSError*)error {
