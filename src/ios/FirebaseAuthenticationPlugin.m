@@ -248,6 +248,9 @@
 }
 
 - (NSDictionary*)userToDictionary:(FIRUser *)user {
+    if (!user) {
+        return @{};
+    }
     return @{
         @"uid": user.uid,
         @"providerId": user.providerID,
