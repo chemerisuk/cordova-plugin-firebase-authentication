@@ -20,13 +20,9 @@ Every method call returns a promise which is optionally fulfilled with an approp
 ### getCurrentUser()
 Returns the current user in the Firebase instance.
 ```js
-cordova.plugins.firebase.auth.getCurrentUser()
-	.then(function(userInfo) {
-		// user information
-	})
-	.catch(function(err) {
-		// user is not logged in
-	});
+cordova.plugins.firebase.auth.getCurrentUser().then(function(userInfo) {
+    // user information or null if not logged in
+})
 ```
 
 ### getIdToken(_forceRefresh_)

@@ -48,7 +48,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     private void getCurrentUser(final CallbackContext callbackContext) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user == null) {
-            callbackContext.error("User is not authorized");
+            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, (String)null));
         } else {
             callbackContext.success(getProfileData(user));
         }
