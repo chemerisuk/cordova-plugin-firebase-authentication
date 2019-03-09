@@ -45,13 +45,9 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void getCurrentUser(final CallbackContext callbackContext) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        if (user == null) {
-            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, (String)null));
-        } else {
-            callbackContext.success(getProfileData(user));
-        }
+    private void getCurrentUser(CallbackContext callbackContext) {
+        PluginResult pluginResult = getProfileResult(firebaseAuth.getCurrentUser());
+        callbackContext.sendPluginResult(pluginResult);
     }
 
     @CordovaMethod
@@ -231,7 +227,8 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     public void onComplete(Task task) {
         if (this.signinCallback != null) {
             if (task.isSuccessful()) {
-                this.signinCallback.success(getProfileData(firebaseAuth.getCurrentUser()));
+                PluginResult pluginResult = getProfileResult(firebaseAuth.getCurrentUser());
+                this.signinCallback.sendPluginResult(pluginResult);
             } else {
                 this.signinCallback.error(task.getException().getMessage());
             }
@@ -243,21 +240,17 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     @Override
     public void onAuthStateChanged(FirebaseAuth auth) {
         if (this.authStateCallback != null) {
-            PluginResult pluginResult;
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-
-            if (user != null) {
-                pluginResult = new PluginResult(PluginResult.Status.OK, getProfileData(user));
-            } else {
-                pluginResult = new PluginResult(PluginResult.Status.OK, "");
-            }
-
+            PluginResult pluginResult = getProfileResult(firebaseAuth.getCurrentUser());
             pluginResult.setKeepCallback(true);
             this.authStateCallback.sendPluginResult(pluginResult);
         }
     }
 
-    private static JSONObject getProfileData(FirebaseUser user) {
+    private static PluginResult getProfileResult(FirebaseUser user) {
+        if (user == null) {
+            return new PluginResult(PluginResult.Status.OK, (String)null);
+        }
+
         JSONObject result = new JSONObject();
 
         try {
@@ -268,10 +261,12 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
             result.put("photoURL", user.getPhotoUrl());
             result.put("providerId", user.getProviderId());
             result.put("emailVerified", user.isEmailVerified());
+
+            return new PluginResult(PluginResult.Status.OK, result);
         } catch (JSONException e) {
             Log.e(TAG, "Fail to process getProfileData", e);
-        }
 
-        return result;
+            return new PluginResult(PluginResult.Status.ERROR, e.getMessage());
+        }
     }
 }

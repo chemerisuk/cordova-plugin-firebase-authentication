@@ -18,8 +18,7 @@
 }
 
 - (void)getCurrentUser:(CDVInvokedUrlCommand *)command {
-    FIRUser *user = [FIRAuth auth].currentUser;
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+    CDVPluginResult *pluginResult = [self getProfileResult:[FIRAuth auth].currentUser];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -220,7 +219,7 @@
         authChangedCallbackId = [command.callbackId copy];
         self.handle = [[FIRAuth auth]
             addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-                CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:user]];
+                CDVPluginResult *pluginResult = [self getProfileResult:user];
                 [pluginResult setKeepCallbackAsBool:YES];
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:authChangedCallbackId];
             }];
@@ -232,24 +231,26 @@
     if (error) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
     } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[self userToDictionary:result.user]];
+        pluginResult = [self getProfileResult:result.user];
     }
     return pluginResult;
 }
 
-- (NSDictionary*)userToDictionary:(FIRUser *)user {
-    if (!user) {
-        return nil;
+- (CDVPluginResult*)getProfileResult:(FIRUser *)user {
+    NSDictionary* result = nil;
+    if (user) {
+        result = @{
+            @"uid": user.uid,
+            @"providerId": user.providerID,
+            @"displayName": user.displayName ? user.displayName : @"",
+            @"email": user.email ? user.email : @"",
+            @"phoneNumber": user.phoneNumber ? user.phoneNumber : @"",
+            @"photoURL": user.photoURL ? user.photoURL.absoluteString : @"",
+            @"emailVerified": [NSNumber numberWithBool:user.emailVerified]
+        };
     }
-    return @{
-        @"uid": user.uid,
-        @"providerId": user.providerID,
-        @"displayName": user.displayName ? user.displayName : @"",
-        @"email": user.email ? user.email : @"",
-        @"phoneNumber": user.phoneNumber ? user.phoneNumber : @"",
-        @"photoURL": user.photoURL ? user.photoURL.absoluteString : @"",
-        @"emailVerified": [NSNumber numberWithBool:user.emailVerified]
-    };
+
+    return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
 }
 
 @end
