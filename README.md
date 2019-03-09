@@ -17,6 +17,14 @@ To use phone number authentication on iOS, your app must be able to receive sile
 ## Methods
 Every method call returns a promise which is optionally fulfilled with an appropriate value.
 
+### getCurrentUser()
+Returns the current user in the Firebase instance.
+```js
+cordova.plugins.firebase.auth.getCurrentUser().then(function(userInfo) {
+    // user information or null if not logged in
+})
+```
+
 ### getIdToken(_forceRefresh_)
 Returns a JWT token used to identify the user to a Firebase service.
 ```js

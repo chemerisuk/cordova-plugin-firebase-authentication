@@ -2,6 +2,11 @@ var exec = require("cordova/exec");
 var PLUGIN_NAME = "FirebaseAuthentication";
 
 module.exports = {
+    getCurrentUser: function () {
+        return new Promise(function (resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "getCurrentUser", []);
+        });
+    },
     getIdToken: function(forceRefresh) {
         return new Promise(function(resolve, reject) {
             if (forceRefresh == null) forceRefresh = false;
