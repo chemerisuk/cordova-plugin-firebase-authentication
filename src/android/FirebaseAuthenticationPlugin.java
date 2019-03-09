@@ -214,11 +214,13 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
     @CordovaMethod
     private void setAuthStateChanged(boolean disable, CallbackContext callbackContext) {
-        this.authStateCallback = disable ? null : callbackContext;
-
-        if (disable) {
+        if (this.authStateCallback != null) {
+            this.authStateCallback = null;
             firebaseAuth.removeAuthStateListener(this);
-        } else {
+        }
+
+        if (!disable) {
+            this.authStateCallback = callbackContext;
             firebaseAuth.addAuthStateListener(this);
         }
     }
