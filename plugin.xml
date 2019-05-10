@@ -17,7 +17,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <engines>
         <engine name="cordova" version=">=7.1.0"/>
         <engine name="cordova-android" version=">=7.0.0"/>
-        <engine name="cordova-ios" version=">=4.3.0"/>
+        <engine name="cordova-ios" version=">=5.0.0"/>
     </engines>
 
     <platform name="ios">
@@ -31,7 +31,15 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <header-file src="src/ios/FirebaseAuthenticationPlugin.h" />
         <source-file src="src/ios/FirebaseAuthenticationPlugin.m" />
 
-        <framework src="Firebase/Auth" type="podspec" spec="~> 5.0"/>
+        <podspec>
+            <config>
+                <source url="https://github.com/CocoaPods/Specs.git"/>
+            </config>
+            <pods>
+                <pod name="Firebase/Core" spec="~> 6.0.0" />
+                <pod name="Firebase/Auth" spec="~> 6.0.0" />
+            </pods>
+        </podspec>
     </platform>
 
     <platform name="android">
