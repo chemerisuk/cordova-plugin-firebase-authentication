@@ -1,5 +1,9 @@
-# cordova-plugin-firebase-authentication<br>[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
-> Cordova plugin for [Firebase Authentication](https://firebase.google.com/docs/auth/)
+# Cordova plugin for [Firebase Authentication](https://firebase.google.com/docs/auth/)
+[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
+
+* [Installation](#installation)
+* [Supported Platforms](#supported-platforms)
+* [Methods](#methods)
 
 ## Installation
 
