@@ -1,4 +1,4 @@
-# cordova-plugin-firebase-authentication<br>[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url]
+# cordova-plugin-firebase-authentication<br>[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
 > Cordova plugin for [Firebase Authentication](https://firebase.google.com/docs/auth/)
 
 ## Installation
@@ -130,4 +130,6 @@ cordova.plugins.firebase.auth.signOut().then(function() {
 [npm-url]: https://www.npmjs.com/package/cordova-plugin-firebase-authentication
 [npm-version]: https://img.shields.io/npm/v/cordova-plugin-firebase-authentication.svg
 [npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-firebase-authentication.svg
+[twitter-url]: https://twitter.com/chemerisuk
+[twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
 
