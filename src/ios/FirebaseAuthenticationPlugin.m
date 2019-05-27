@@ -1,11 +1,4 @@
 #import "FirebaseAuthenticationPlugin.h"
-@import Firebase;
-
-@interface FirebaseAuthenticationPlugin() {
-    NSString* authChangedCallbackId;
-}
-@property(strong, nonatomic) FIRAuthStateDidChangeListenerHandle handle;
-@end
 
 @implementation FirebaseAuthenticationPlugin
 
@@ -14,6 +7,21 @@
 
     if(![FIRApp defaultApp]) {
         [FIRApp configure];
+    }
+}
+
+- (void)setAuthStateChanged:(CDVInvokedUrlCommand*)command {
+    BOOL disable = [[command.arguments objectAtIndex:0] boolValue];
+    if (self.authChangedHandler) {
+        [[FIRAuth auth] removeAuthStateDidChangeListener:self.authChangedHandler];
+        self.authChangedHandler = nil;
+    }
+    if (!disable) {
+        self.authChangedHandler = [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth* auth, FIRUser* user) {
+           CDVPluginResult *pluginResult = [self getProfileResult:user];
+           [pluginResult setKeepCallbackAsBool:YES];
+           [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       }];
     }
 }
 
@@ -50,8 +58,7 @@
     [[FIRAuth auth] createUserWithEmail:email
                                password:password
                              completion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
@@ -97,15 +104,13 @@
     [[FIRAuth auth] signInWithEmail:email
                            password:password
                          completion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
 - (void)signInAnonymously:(CDVInvokedUrlCommand *)command {
     [[FIRAuth auth] signInAnonymouslyWithCompletion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
@@ -113,27 +118,21 @@
     NSString* idToken = [command.arguments objectAtIndex:0];
     NSString* accessToken = [command.arguments objectAtIndex:1];
 
-    FIRAuthCredential *credential =
-        [FIRGoogleAuthProvider credentialWithIDToken:idToken
-                                         accessToken:accessToken];
-
-    [[FIRAuth auth] signInAndRetrieveDataWithCredential:credential
-                                             completion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+    FIRAuthCredential *credential = [FIRGoogleAuthProvider credentialWithIDToken:idToken
+                                                                     accessToken:accessToken];
+    [[FIRAuth auth] signInWithCredential:credential
+                              completion:^(FIRAuthDataResult *result, NSError *error) {
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
 - (void)signInWithFacebook:(CDVInvokedUrlCommand *)command {
     NSString* accessToken = [command.arguments objectAtIndex:0];
 
-    FIRAuthCredential *credential =
-        [FIRFacebookAuthProvider credentialWithAccessToken:accessToken];
-
-    [[FIRAuth auth] signInAndRetrieveDataWithCredential:credential
-                                             completion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+    FIRAuthCredential *credential = [FIRFacebookAuthProvider credentialWithAccessToken:accessToken];
+    [[FIRAuth auth] signInWithCredential:credential
+                              completion:^(FIRAuthDataResult *result, NSError *error) {
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
@@ -141,14 +140,11 @@
     NSString* token = [command.arguments objectAtIndex:0];
     NSString* secret = [command.arguments objectAtIndex:1];
 
-    FIRAuthCredential *credential =
-        [FIRTwitterAuthProvider credentialWithToken:token
-                                             secret:secret];
-
-    [[FIRAuth auth] signInAndRetrieveDataWithCredential:credential
-                                             completion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+    FIRAuthCredential *credential = [FIRTwitterAuthProvider credentialWithToken:token
+                                                                         secret:secret];
+    [[FIRAuth auth] signInWithCredential:credential
+                              completion:^(FIRAuthDataResult *result, NSError *error) {
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
@@ -160,10 +156,9 @@
             credentialWithVerificationID:verificationId
                         verificationCode:smsCode];
 
-    [[FIRAuth auth] signInAndRetrieveDataWithCredential:credential
-                                             completion:^(FIRAuthDataResult *result, NSError *error) {
-        [self.commandDelegate sendPluginResult:[self createAuthResult:result
-                                                            withError:error] callbackId:command.callbackId];
+    [[FIRAuth auth] signInWithCredential:credential
+                              completion:^(FIRAuthDataResult *result, NSError *error) {
+        [self sendAuthResult:result callbackId:command.callbackId withError:error];
     }];
 }
 
@@ -209,31 +204,15 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void)setAuthStateChanged:(CDVInvokedUrlCommand*)command {
-    BOOL disable = [[command.arguments objectAtIndex:0] boolValue];
-    if (_handle) {
-        [[FIRAuth auth] removeAuthStateDidChangeListener:_handle];
-        self.handle = nil;
-    }
-    if (!disable) {
-        authChangedCallbackId = [command.callbackId copy];
-        self.handle = [[FIRAuth auth]
-            addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-                CDVPluginResult *pluginResult = [self getProfileResult:user];
-                [pluginResult setKeepCallbackAsBool:YES];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:authChangedCallbackId];
-            }];
-    }
-}
-
-- (CDVPluginResult*) createAuthResult:(FIRAuthDataResult*)result withError:(NSError*)error {
+- (void) sendAuthResult:(FIRAuthDataResult*)result callbackId:(NSString*)callbackId withError:(NSError*)error {
     CDVPluginResult *pluginResult;
     if (error) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
     } else {
         pluginResult = [self getProfileResult:result.user];
     }
-    return pluginResult;
+
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
 - (CDVPluginResult*)getProfileResult:(FIRUser *)user {
