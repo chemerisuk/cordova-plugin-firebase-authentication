@@ -86,16 +86,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     @CordovaMethod
     private void createUserWithEmailAndPassword(String email, String password, final CallbackContext callbackContext) {
         this.firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(Task task) {
-                        if (task.isSuccessful()) {
-                            callbackContext.success();
-                        } else {
-                            callbackContext.error(task.getException().getMessage());
-                        }
-                    }
-                });
+                .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
     @CordovaMethod
@@ -106,62 +97,26 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
             callbackContext.error("User is not authorized");
         } else {
             user.sendEmailVerification()
-                    .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                        @Override
-                        public void onComplete(Task task) {
-                            if (task.isSuccessful()) {
-                                callbackContext.success();
-                            } else {
-                                callbackContext.error(task.getException().getMessage());
-                            }
-                        }
-                    });
+                    .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
         }
     }
 
     @CordovaMethod
     private void sendPasswordResetEmail(String email, final CallbackContext callbackContext) {
         this.firebaseAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(Task task) {
-                        if (task.isSuccessful()) {
-                            callbackContext.success();
-                        } else {
-                            callbackContext.error(task.getException().getMessage());
-                        }
-                    }
-                });
+                .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
     @CordovaMethod
     private void signInAnonymously(final CallbackContext callbackContext) {
         this.firebaseAuth.signInAnonymously()
-                .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(Task task) {
-                        if (task.isSuccessful()) {
-                            callbackContext.success();
-                        } else {
-                            callbackContext.error(task.getException().getMessage());
-                        }
-                    }
-                });
+                .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
     @CordovaMethod
     private void signInWithEmailAndPassword(String email, String password, final CallbackContext callbackContext) {
         this.firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(Task task) {
-                        if (task.isSuccessful()) {
-                            callbackContext.success();
-                        } else {
-                            callbackContext.error(task.getException().getMessage());
-                        }
-                    }
-                });
+                .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
     @CordovaMethod
@@ -181,19 +136,10 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
     private void signInWithCredential(final AuthCredential credential, final CallbackContext callbackContext) {
         this.firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(Task task) {
-                        if (task.isSuccessful()) {
-                            callbackContext.success();
-                        } else {
-                            callbackContext.error(task.getException().getMessage());
-                        }
-                    }
-                });
+                .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
-    private Task signInWithPhoneCredential(PhoneAuthCredential credential) {
+    private Task<?> signInWithPhoneCredential(PhoneAuthCredential credential) {
         FirebaseUser user = this.firebaseAuth.getCurrentUser();
 
         if (user != null) {
@@ -206,16 +152,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     @CordovaMethod
     private void signInWithVerificationId(String verificationId, String code, CallbackContext callbackContext) {
         signInWithPhoneCredential(PhoneAuthProvider.getCredential(verificationId, code))
-            .addOnCompleteListener(cordova.getActivity(), new OnCompleteListener() {
-                @Override
-                public void onComplete(Task task) {
-                    if (task.isSuccessful()) {
-                        callbackContext.success();
-                    } else {
-                        callbackContext.error(task.getException().getMessage());
-                    }
-                }
-            });
+                .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
     @CordovaMethod
@@ -265,6 +202,19 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
             pluginResult.setKeepCallback(true);
             this.authStateCallback.sendPluginResult(pluginResult);
         }
+    }
+
+    private static <T> OnCompleteListener<T> createCompleteListener(final CallbackContext callbackContext) {
+        return new OnCompleteListener<T>() {
+            @Override
+            public void onComplete(Task task) {
+                if (task.isSuccessful()) {
+                    callbackContext.success();
+                } else {
+                    callbackContext.error(task.getException().getMessage());
+                }
+            }
+        };
     }
 
     private static PluginResult getProfileResult(FirebaseUser user) {
