@@ -84,13 +84,13 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void createUserWithEmailAndPassword(String email, String password, final CallbackContext callbackContext) {
+    private void createUserWithEmailAndPassword(String email, String password, CallbackContext callbackContext) {
         this.firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
 
     @CordovaMethod
-    private void sendEmailVerification(final CallbackContext callbackContext) {
+    private void sendEmailVerification(CallbackContext callbackContext) {
         FirebaseUser user = this.firebaseAuth.getCurrentUser();
 
         if (user == null) {
@@ -102,7 +102,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void sendPasswordResetEmail(String email, final CallbackContext callbackContext) {
+    private void sendPasswordResetEmail(String email, CallbackContext callbackContext) {
         this.firebaseAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
@@ -114,7 +114,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
     }
 
     @CordovaMethod
-    private void signInWithEmailAndPassword(String email, String password, final CallbackContext callbackContext) {
+    private void signInWithEmailAndPassword(String email, String password, CallbackContext callbackContext) {
         this.firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }
@@ -134,7 +134,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
         signInWithCredential(TwitterAuthProvider.getCredential(token, secret), callbackContext);
     }
 
-    private void signInWithCredential(final AuthCredential credential, final CallbackContext callbackContext) {
+    private void signInWithCredential(AuthCredential credential, CallbackContext callbackContext) {
         this.firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
     }

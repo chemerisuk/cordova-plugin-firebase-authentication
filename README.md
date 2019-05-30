@@ -1,9 +1,20 @@
 # Cordova plugin for [Firebase Authentication](https://firebase.google.com/docs/auth/)
+
 [![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
 
-* [Installation](#installation)
-* [Supported Platforms](#supported-platforms)
-* [Methods](#methods)
+| [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)][donate-url] | Your help is appreciated. Create a PR, submit a bug or just grab me :beer: |
+|-|-|
+
+## Index
+
+<!-- MarkdownTOC levels="2" autolink="true" -->
+
+- [Installation](#installation)
+- [Supported Platforms](#supported-platforms)
+- [User authorization](#user-authorization)
+- [Get/set user state](#getset-user-state)
+
+<!-- /MarkdownTOC -->
 
 ## Installation
 
@@ -20,22 +31,22 @@ To use phone number authentication on iOS, your app must be able to receive sile
 - iOS
 - Android
 
-## Methods
-Every method call returns a promise which is optionally fulfilled with an appropriate value.
+## User authorization
+Unlike v1 of the plugin in v2 you must register `onAuthStateChanged` callback to be notified when  `signIn*` or `signOut` methods are completed. 
 
-### getCurrentUser()
-Returns the current user in the Firebase instance.
-```js
-cordova.plugins.firebase.auth.getCurrentUser().then(function(userInfo) {
-    // user information or null if not logged in
-})
-```
+### onAuthStateChanged(_callback_)
+Registers a block as an auth state did change listener. To be invoked when:
+* The block is registered as a listener,
+* A user with a different UID from the current user has signed in, or
+* The current user has signed out.
 
-### getIdToken(_forceRefresh_)
-Returns a JWT token used to identify the user to a Firebase service.
 ```js
-cordova.plugins.firebase.auth.getIdToken().then(function(idToken) {
-    // send token to server
+cordova.plugins.firebase.auth.onAuthStateChanged(function(userInfo) {
+    if (userInfo) {
+        // user was signed in
+    } else {
+        // user was signed out
+    }
 });
 ```
 
@@ -60,9 +71,7 @@ cordova.plugins.firebase.auth.sendPasswordResetEmail("my@mail.com");
 ### signInWithEmailAndPassword(_email_, _password_)
 Asynchronously signs in using an email and password.
 ```js
-cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0rd").then(function(userInfo) {
-    // user is signed in
-});
+cordova.plugins.firebase.auth.signInWithEmailAndPassword("my@mail.com", "pa55w0rd");
 ```
 
 ### verifyPhoneNumber(_phoneNumber_, _timeout_)
@@ -81,17 +90,13 @@ cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789", 30000).then(functi
 ### signInWithVerificationId(_verificationId_, _smsCode_)
 Asynchronously signs in using verificationId and 6-digit SMS code.
 ```js
-cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456").then(function(userInfo) {
-    // user is signed in
-});
+cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456");
 ```
 
 ### signInAnonymously()
 Create and use temporary anonymous account to authenticate with Firebase. 
 ```js
-cordova.plugins.firebase.auth.signInAnonymously().then(function(userInfo) {
-    // user is signed in
-});
+cordova.plugins.firebase.auth.signInAnonymously();
 ```
 
 ### signInWithGoogle(_idToken_, _accessToken_)
@@ -101,21 +106,30 @@ Uses Google's _idToken_ and _accessToken_ to sign-in into firebase account. In o
 Uses Facebook's _accessToken_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/facebook-login) and [iOS](https://firebase.google.com/docs/auth/ios/facebook-login).
 
 ### signInWithTwitter(_token_, _secret_)
-Uses Twitter's _token_ and _secret_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/twitter-login) and [iOS](https://firebase.google.com/docs/auth/ios/twitter-login).  
+Uses Twitter's _token_ and _secret_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/twitter-login) and [iOS](https://firebase.google.com/docs/auth/ios/twitter-login). 
 
-### onAuthStateChanged(_callback_)
-Registers a block as an auth state did change listener. To be invoked when:
-* The block is registered as a listener,
-* A user with a different UID from the current user has signed in, or
-* The current user has signed out.
-
+### signOut()
+Signs out the current user and clears it from the disk cache.
 ```js
-cordova.plugins.firebase.auth.onAuthStateChanged(function(userInfo) {
-    if (userInfo && userInfo.uid) {
-        // user was signed in
-    } else {
-        // user was signed out
-    }
+cordova.plugins.firebase.auth.signOut();
+```
+
+## Get/set user state
+Every method call returns a promise which is optionally fulfilled with an appropriate value.
+
+### getCurrentUser()
+Returns the current user in the Firebase instance.
+```js
+cordova.plugins.firebase.auth.getCurrentUser().then(function(userInfo) {
+    // user information or null if not logged in
+})
+```
+
+### getIdToken(_forceRefresh_)
+Returns a JWT token used to identify the user to a Firebase service.
+```js
+cordova.plugins.firebase.auth.getIdToken().then(function(idToken) {
+    // send token to server
 });
 ```
 
@@ -125,17 +139,9 @@ Set's the current user language code. The string used to set this property must 
 ### useAppLanguage()
 Sets languageCode to the app’s current language.
 
-### signOut()
-Signs out the current user and clears it from the disk cache.
-```js
-cordova.plugins.firebase.auth.signOut().then(function() {
-    // user was signed out
-});
-```
-
 [npm-url]: https://www.npmjs.com/package/cordova-plugin-firebase-authentication
 [npm-version]: https://img.shields.io/npm/v/cordova-plugin-firebase-authentication.svg
 [npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-firebase-authentication.svg
 [twitter-url]: https://twitter.com/chemerisuk
 [twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
-
+[donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FYAALBP25DP2G&source=url
