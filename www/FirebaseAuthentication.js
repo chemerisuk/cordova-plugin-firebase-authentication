@@ -2,6 +2,18 @@ var exec = require("cordova/exec");
 var PLUGIN_NAME = "FirebaseAuthentication";
 
 module.exports = {
+    onAuthStateChanged: function(callback) {
+        exec(callback, null, PLUGIN_NAME, "setAuthStateChanged", [false]);
+
+        return function() {
+            exec(null, null, PLUGIN_NAME, "setAuthStateChanged", [true]);
+        };
+    },
+    getCurrentUser: function () {
+        return new Promise(function (resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "getCurrentUser", []);
+        });
+    },
     getIdToken: function(forceRefresh) {
         return new Promise(function(resolve, reject) {
             if (forceRefresh == null) forceRefresh = false;
@@ -78,12 +90,5 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [null]);
         });
-    },
-    onAuthStateChanged: function(callback) {
-        exec(callback, null, PLUGIN_NAME, "setAuthStateChanged", [false]);
-
-        return function() {
-            exec(null, null, PLUGIN_NAME, "setAuthStateChanged", [true]);
-        };
     }
 };
