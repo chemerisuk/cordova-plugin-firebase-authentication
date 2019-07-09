@@ -18,10 +18,6 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.FirebaseApiNotAvailableException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
@@ -30,8 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implements AuthStateListener {
@@ -50,8 +44,6 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.phoneAuthProvider = PhoneAuthProvider.getInstance();
-        this.mForceResendingTokenStore = null;
-        this.mCredential = null;
     }
 
     @CordovaMethod
@@ -238,28 +230,6 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
         }
 
         return exceptionMap;
-    }
-
-    private void signInWithPhoneCredential(PhoneAuthCredential credential) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        if (user == null) {
-            firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-        } else {
-            user.updatePhoneNumber(credential)
-                .addOnCompleteListener(cordova.getActivity(), FirebaseAuthenticationPlugin.this);
-        }
-    }
-
-    @CordovaMethod
-    private void signInWithPhoneAutoVerification(final CallbackContext callbackContext) {
-        if (mCredential != null) {
-            signInWithPhoneCredential(mCredential);
-            callbackContext.success();
-        } else {
-            callbackContext.error("No credential present.");
-        }
     }
 
     @CordovaMethod
