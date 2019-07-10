@@ -18,6 +18,10 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
@@ -26,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implements AuthStateListener {
