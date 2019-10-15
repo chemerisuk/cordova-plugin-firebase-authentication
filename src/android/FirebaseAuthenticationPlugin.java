@@ -161,7 +161,7 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(PhoneAuthCredential credential) {
-                        signInWithPhoneCredential(credential);
+                        signInWithPhoneCredential(credential).addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
                     }
 
                     @Override
