@@ -36,8 +36,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods>
-                <pod name="Firebase/Core" spec="~> 6.3.0" />
-                <pod name="Firebase/Auth" spec="~> 6.3.0" />
+                <pod name="Firebase/Auth" spec="~> 6.19.0" />
             </pods>
         </podspec>
     </platform>
@@ -53,7 +52,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
-        <dependency id="cordova-support-google-services" version="^1.3.0"/>
+        <dependency id="cordova-support-google-services" version="^1.3.2"/>
 
         <framework src="com.google.firebase:firebase-auth:$FIREBASE_AUTH_VERSION" />
 
