@@ -108,6 +108,9 @@ Uses Facebook's _accessToken_ to sign-in into firebase account. In order to retr
 ### signInWithTwitter(_token_, _secret_)
 Uses Twitter's _token_ and _secret_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/twitter-login) and [iOS](https://firebase.google.com/docs/auth/ios/twitter-login). 
 
+### signInWithCustomToken(_idToken_)
+You can integrate Firebase Authentication with a custom authentication system by modifying your authentication server to produce custom signed tokens when a user successfully signs in. Your app receives this token and uses it to authenticate with Firebase. See [Android](https://firebase.google.com/docs/auth/android/custom-auth) and [iOS](https://firebase.google.com/docs/auth/ios/custom-auth) for more info. 
+
 ### signOut()
 Signs out the current user and clears it from the disk cache.
 ```js

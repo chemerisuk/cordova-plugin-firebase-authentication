@@ -16,6 +16,7 @@
 - (void)signInWithTwitter:(CDVInvokedUrlCommand*)command;
 - (void)signInWithVerificationId:(CDVInvokedUrlCommand*)command;
 - (void)verifyPhoneNumber:(CDVInvokedUrlCommand*)command;
+- (void)signInWithCustomToken:(CDVInvokedUrlCommand*)command;
 - (void)signOut:(CDVInvokedUrlCommand*)command;
 - (void)setLanguageCode:(CDVInvokedUrlCommand*)command;
 - (void)setAuthStateChanged:(CDVInvokedUrlCommand*)command;

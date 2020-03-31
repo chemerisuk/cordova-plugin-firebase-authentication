@@ -164,6 +164,15 @@
     }];
 }
 
+- (void)signInWithCustomToken:(CDVInvokedUrlCommand *)command {
+    NSString* idToken = [command.arguments objectAtIndex:0];
+
+    [[FIRAuth auth] signInWithCustomToken:idToken
+                         completion:^(FIRAuthDataResult *result, NSError *error) {
+        [self respondWith:error callbackId:command.callbackId];
+    }];
+}
+
 - (void)signOut:(CDVInvokedUrlCommand*)command {
     NSError *signOutError;
     CDVPluginResult *pluginResult;
