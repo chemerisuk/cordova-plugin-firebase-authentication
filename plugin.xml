@@ -36,7 +36,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods>
-                <pod name="Firebase/Auth" spec="~> 6.19.0" />
+                <pod name="Firebase/Auth" spec="~> 6.21.0" />
             </pods>
         </podspec>
     </platform>
