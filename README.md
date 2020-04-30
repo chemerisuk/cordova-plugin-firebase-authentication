@@ -22,8 +22,6 @@
 
 Use variable `FIREBASE_AUTH_VERSION` to override dependency version on Android.
 
-Use variable `POD_FIREBASE_VERSION` to override dependency version on iOS.
-
 To use phone number authentication on iOS, your app must be able to receive silent APNs notifications from Firebase. For iOS 8.0 and above silent notifications do not require explicit user consent and is therefore unaffected by a user declining to receive APNs notifications in the app. Thus, the app does not need to request user permission to receive push notifications when implementing Firebase phone number auth.
 
 ## Supported Platforms
