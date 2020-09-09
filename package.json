@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-firebase-authentication",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Cordova plugin for Firebase Authentication",
   "cordova": {
     "id": "cordova-plugin-firebase-authentication",
