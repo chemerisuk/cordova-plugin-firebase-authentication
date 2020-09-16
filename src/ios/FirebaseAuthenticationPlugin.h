@@ -14,6 +14,7 @@
 - (void)signInWithGoogle:(CDVInvokedUrlCommand*)command;
 - (void)signInWithFacebook:(CDVInvokedUrlCommand*)command;
 - (void)signInWithTwitter:(CDVInvokedUrlCommand*)command;
+- (void)signInWithApple:(CDVInvokedUrlCommand*)command;
 - (void)signInWithVerificationId:(CDVInvokedUrlCommand*)command;
 - (void)verifyPhoneNumber:(CDVInvokedUrlCommand*)command;
 - (void)signInWithCustomToken:(CDVInvokedUrlCommand*)command;

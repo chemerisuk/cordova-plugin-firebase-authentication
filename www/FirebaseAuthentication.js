@@ -61,6 +61,11 @@ module.exports = {
             exec(resolve, reject, PLUGIN_NAME, "signInWithTwitter", [token, secret]);
         });
     },
+    signInWithApple: function(idToken, rawNonce) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInWithApple", [idToken, rawNonce || null]);
+        });
+    },
     verifyPhoneNumber: function(phoneNumber, timeoutMillis) {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);

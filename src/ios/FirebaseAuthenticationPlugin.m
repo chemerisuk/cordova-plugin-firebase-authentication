@@ -134,6 +134,19 @@
     }];
 }
 
+- (void)signInWithApple:(CDVInvokedUrlCommand *)command {
+    NSString* idToken = [command.arguments objectAtIndex:0];
+    NSString* rawNonce = [command.arguments objectAtIndex:1];
+
+    FIRAuthCredential *credential = [FIROAuthProvider credentialWithProviderID:@"apple.com"
+                                                                       IDToken:idToken
+                                                                      rawNonce:rawNonce];
+    [[FIRAuth auth] signInWithCredential:credential
+                              completion:^(FIRAuthDataResult *result, NSError *error) {
+        [self respondWith:error callbackId:command.callbackId];
+    }];
+}
+
 - (void)signInWithVerificationId:(CDVInvokedUrlCommand*)command {
     NSString* verificationId = [command.arguments objectAtIndex:0];
     NSString* smsCode = [command.arguments objectAtIndex:1];
