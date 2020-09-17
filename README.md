@@ -18,7 +18,7 @@
 
 ## Installation
 
-    cordova plugin add cordova-plugin-firebase-authentication --save
+    cordova plugin add cordova-plugin-firebase-authentication
 
 Use variables `ANDROID_FIREBASE_AUTH_VERSION` or `IOS_FIREBASE_AUTH_VERSION` to override dependency versions for Firebase SDKs.
 
@@ -98,7 +98,25 @@ cordova.plugins.firebase.auth.signInAnonymously();
 ```
 
 ### signInWithGoogle(_idToken_, _accessToken_)
-Uses Google's _idToken_ and _accessToken_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/google-signin) and [iOS](https://firebase.google.com/docs/auth/ios/google-signin).
+Uses Google's _idToken_ and _accessToken_ to sign-in into firebase account. In order to retriave those tokens you can use `cordova-plugin-googleplus` (or any other cordova plugin for Google Sign-In).
+
+    cordova plugin add cordova-plugin-firebase-authentication
+    cordova plugin add cordova-plugin-googleplus --variable REVERSED_CLIENT_ID=myreversedclientid --variable WEB_APPLICATION_CLIENT_ID=mywebapplicationclientid
+
+Now trigger signin dialog UI to popup:
+
+```js
+window.plugins.googleplus.login({
+    'scopes': '... ', // optional, space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
+    'webClientId': 'client id of the web app/server side', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+    'offline': true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+}, function(res) {
+    // signin into Firebase
+    cordova.plugins.firebase.auth.signInWithGoogle(res.idToken, res.accessToken);
+}, function(err) {
+    console.error("login failed", err);
+}
+```
 
 ### signInWithFacebook(_accessToken_)
 Uses Facebook's _accessToken_ to sign-in into firebase account. In order to retriave those tokens follow instructions for [Android](https://firebase.google.com/docs/auth/android/facebook-login) and [iOS](https://firebase.google.com/docs/auth/ios/facebook-login).
