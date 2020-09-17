@@ -112,10 +112,32 @@ window.plugins.googleplus.login({
     'offline': true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
 }, function(res) {
     // signin into Firebase
-    cordova.plugins.firebase.auth.signInWithGoogle(res.idToken, res.accessToken);
+    cordova.plugins.firebase.auth.signInWithGoogle(res.idToken, res.accessToken).then(function() {
+        console.log("Firebase logged in with Google");
+    });
 }, function(err) {
     console.error("login failed", err);
-}
+});
+```
+
+### signInWithApple(_idToken_, _rawNonce_)
+Uses Apples's _idToken_ and _rawNonce_ to sign-in into firebase account. For getting _idToken_ (_rawNonce_ is optional) you can use `cordova-plugin-sign-in-with-apple` (or any other cordova plugin for Apple Sign-In).
+
+    cordova plugin add cordova-plugin-firebase-authentication
+    cordova plugin add cordova-plugin-sign-in-with-apple
+
+Then use code snippet below to signin into Firebase:
+
+```js
+cordova.plugins.SignInWithApple.signin({
+    requestedScopes: [0, 1]
+}, function(res) {
+    cordova.plugins.firebase.auth.signInWithApple(res.identityToken).then(function() {
+        console.log("Firebase logged in with Apple");
+    });
+}, function(err) {
+    console.error("signin failed", err);
+});
 ```
 
 ### signInWithFacebook(_accessToken_)
