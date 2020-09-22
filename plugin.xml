@@ -21,7 +21,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </engines>
 
     <platform name="ios">
-        <preference name="IOS_FIREBASE_AUTH_VERSION" default="~> 6.31.0"/>
+        <preference name="IOS_FIREBASE_AUTH_VERSION" default="~> 6.32.2"/>
 
         <config-file target="config.xml" parent="/*">
             <feature name="FirebaseAuthentication">
