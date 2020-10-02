@@ -184,7 +184,7 @@ cordova.plugins.firebase.auth.updateProfile({
 cordova.plugins.firebase.auth.updateProfile({
     photoURL: null
 }).then(function() {
-    // displayName is changed - "Jane Q. User"
+    // displayName is unchanged - "Jane Q. User"
     // photoURL is changed - null
     console.log("only photoURL is changed");
 });
