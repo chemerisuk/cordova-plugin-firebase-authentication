@@ -1,5 +1,6 @@
 package by.chemerisuk.cordova.firebase;
 
+import android.net.Uri;
 import android.util.Log;
 
 import by.chemerisuk.cordova.support.CordovaMethod;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
@@ -245,5 +247,50 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
             return new PluginResult(PluginResult.Status.ERROR, e.getMessage());
         }
+    }
+
+    /**
+     * Updates the current user's profile data.
+     *
+     * @param params          Allows 2 properties: 'displayName' and 'photoURL'.
+     *                        If a property is not set, then the user's current value is left untouched.
+     * @param callbackContext Cordova callback
+     */
+    @CordovaMethod
+    private void updateProfile(JSONObject params, CallbackContext callbackContext) {
+        FirebaseUser user = this.firebaseAuth.getCurrentUser();
+
+        if (user == null) {
+            callbackContext.error("User is not authorized");
+        }
+        else {
+            UserProfileChangeRequest request = this.toUserProfileChangeRequest(params);
+            if (request == null) {
+                callbackContext.success();
+                return;
+            }
+
+            user.updateProfile(request)
+                    .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
+        }
+    }
+
+    private UserProfileChangeRequest toUserProfileChangeRequest(JSONObject jsonObject) {
+        if (!jsonObject.has("displayName") && !jsonObject.has("photoURL"))
+            return null;
+
+        UserProfileChangeRequest.Builder requestBuilder = new UserProfileChangeRequest.Builder();
+
+        if (jsonObject.has("displayName")) {
+            String displayName = jsonObject.optString("displayName", null);
+            requestBuilder = requestBuilder.setDisplayName(displayName);
+        }
+
+        if (jsonObject.has("photoURL")) {
+            String photoURL = jsonObject.optString("photoURL", null);
+            requestBuilder = requestBuilder.setPhotoUri(Uri.parse(photoURL));
+        }
+
+        return requestBuilder.build();
     }
 }

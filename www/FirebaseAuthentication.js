@@ -95,5 +95,54 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [null]);
         });
+    },
+     /**
+     * Updates the current user's profile data.
+     * 
+     * Passing a `null` value will delete the current attribute's value, but not
+     * passing a property won't change the current attribute's value:
+     *
+     * @example
+     * ```javascript
+     * updateProfile({
+     *   displayName: "Jane Q. User",
+     *   photoURL: "https://example.com/jane-q-user/profile.jpg"
+     * }).then(function() {
+     *   // Profile updated successfully!
+     *   // "Jane Q. User"
+     *   var displayName = user.displayName;
+     *   // "https://example.com/jane-q-user/profile.jpg"
+     *   var photoURL = user.photoURL;
+     * }, function(error) {
+     *   // An error happened.
+     * });
+     *
+     * // Let's say we're using the same user than before, after the update.
+     * user.updateProfile({photoURL: null}).then(function() {
+     *   // Profile updated successfully!
+     *   // "Jane Q. User", hasn't changed.
+     *   var displayName = user.displayName;
+     *   // Now, this is null.
+     *   var photoURL = user.photoURL;
+     * }, function(error) {
+     *   // An error happened.
+     * });
+     * ```
+     *
+     * @param profile The profile's
+     *     displayName and photoURL to update.
+     */
+    updateProfile: function(profile) {
+        const displayName = profile['displayName'];
+        const photoUrl = profile['photoURL'];
+
+        if (displayName === undefined && photoUrl === undefined) {
+            // No change, directly return.
+            return Promise.resolve();
+        }
+
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "updateProfile", [profile]);
+        });
     }
 };
