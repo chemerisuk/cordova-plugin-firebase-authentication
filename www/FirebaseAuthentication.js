@@ -97,17 +97,8 @@ module.exports = {
         });
     },
     updateProfile: function(profile) {
-        const params = profile || {};
-        const displayName = params['displayName'];
-        const photoUrl = params['photoURL'];
-
-        if (displayName === undefined && photoUrl === undefined) {
-            // No change, directly return.
-            return Promise.resolve();
-        }
-
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "updateProfile", [params]);
+            exec(resolve, reject, PLUGIN_NAME, "updateProfile", [profile || {}]);
         });
     }
 };
