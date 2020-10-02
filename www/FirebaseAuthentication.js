@@ -118,7 +118,7 @@ module.exports = {
      * });
      *
      * // Let's say we're using the same user than before, after the update.
-     * user.updateProfile({photoURL: null}).then(function() {
+     * updateProfile({photoURL: null}).then(function() {
      *   // Profile updated successfully!
      *   // "Jane Q. User", hasn't changed.
      *   var displayName = user.displayName;
