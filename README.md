@@ -170,9 +170,8 @@ cordova.plugins.firebase.auth.getCurrentUser().then(function(userInfo) {
 Updates the current user's profile data.
 
 Passing a `null` value will delete the current attribute's value, but not
-passing a property won't change the current attribute's value:
+passing a property won't change the current attribute's value.
 
-@example
 ```js
 cordova.plugins.firebase.auth.updateProfile({
    displayName: "Jane Q. User",
