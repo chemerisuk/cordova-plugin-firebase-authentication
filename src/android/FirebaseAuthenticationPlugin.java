@@ -249,13 +249,6 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
         }
     }
 
-    /**
-     * Updates the current user's profile data.
-     *
-     * @param params          Allows 2 properties: 'displayName' and 'photoURL'.
-     *                        If a property is not set, then the user's current value is left untouched.
-     * @param callbackContext Cordova callback
-     */
     @CordovaMethod
     private void updateProfile(JSONObject params, CallbackContext callbackContext) {
         FirebaseUser user = this.firebaseAuth.getCurrentUser();
