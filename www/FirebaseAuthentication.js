@@ -97,8 +97,9 @@ module.exports = {
         });
     },
     updateProfile: function(profile) {
-        const displayName = profile['displayName'];
-        const photoUrl = profile['photoURL'];
+        const params = profile || {};
+        const displayName = params['displayName'];
+        const photoUrl = params['photoURL'];
 
         if (displayName === undefined && photoUrl === undefined) {
             // No change, directly return.
@@ -106,7 +107,7 @@ module.exports = {
         }
 
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "updateProfile", [profile]);
+            exec(resolve, reject, PLUGIN_NAME, "updateProfile", [params]);
         });
     }
 };
