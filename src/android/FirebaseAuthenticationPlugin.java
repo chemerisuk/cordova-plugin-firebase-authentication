@@ -257,21 +257,13 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
             callbackContext.error("User is not authorized");
         }
         else {
-            UserProfileChangeRequest request = this.toUserProfileChangeRequest(params);
-            if (request == null) {
-                callbackContext.success();
-                return;
-            }
-
+            UserProfileChangeRequest request = createProfileChangeRequest(params);
             user.updateProfile(request)
                     .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
         }
     }
 
-    private UserProfileChangeRequest toUserProfileChangeRequest(JSONObject jsonObject) {
-        if (!jsonObject.has("displayName") && !jsonObject.has("photoURL"))
-            return null;
-
+    private static UserProfileChangeRequest createProfileChangeRequest(JSONObject jsonObject) {
         UserProfileChangeRequest.Builder requestBuilder = new UserProfileChangeRequest.Builder();
 
         if (jsonObject.has("displayName")) {
