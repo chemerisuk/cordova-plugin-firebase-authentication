@@ -166,6 +166,30 @@ cordova.plugins.firebase.auth.getCurrentUser().then(function(userInfo) {
 })
 ```
 
+### updateProfile()
+Updates the current user's profile data.
+
+Passing a `null` value will delete the current attribute's value, but not
+passing a property won't change the current attribute's value.
+
+```js
+cordova.plugins.firebase.auth.updateProfile({
+   displayName: "Jane Q. User",
+   photoURL: "https://example.com/jane-q-user/profile.jpg"
+}).then(function() {
+    console.log("user profile updated");
+});
+
+// Let's say we continue updating the profile of the same user as before.
+cordova.plugins.firebase.auth.updateProfile({
+    photoURL: null
+}).then(function() {
+    // displayName is unchanged - "Jane Q. User"
+    // photoURL is changed - null
+    console.log("only photoURL is changed");
+});
+```
+
 ### getIdToken(_forceRefresh_)
 Returns a JWT token used to identify the user to a Firebase service.
 ```js

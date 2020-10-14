@@ -95,5 +95,10 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "setLanguageCode", [null]);
         });
+    },
+    updateProfile: function(profile) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "updateProfile", [profile || {}]);
+        });
     }
 };

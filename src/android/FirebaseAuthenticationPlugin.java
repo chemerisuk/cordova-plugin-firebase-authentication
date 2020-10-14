@@ -1,5 +1,6 @@
 package by.chemerisuk.cordova.firebase;
 
+import android.net.Uri;
 import android.util.Log;
 
 import by.chemerisuk.cordova.support.CordovaMethod;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
@@ -245,5 +247,35 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
             return new PluginResult(PluginResult.Status.ERROR, e.getMessage());
         }
+    }
+
+    @CordovaMethod
+    private void updateProfile(JSONObject params, CallbackContext callbackContext) {
+        FirebaseUser user = this.firebaseAuth.getCurrentUser();
+
+        if (user == null) {
+            callbackContext.error("User is not authorized");
+        }
+        else {
+            UserProfileChangeRequest request = createProfileChangeRequest(params);
+            user.updateProfile(request)
+                    .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
+        }
+    }
+
+    private static UserProfileChangeRequest createProfileChangeRequest(JSONObject jsonObject) {
+        UserProfileChangeRequest.Builder requestBuilder = new UserProfileChangeRequest.Builder();
+
+        if (jsonObject.has("displayName")) {
+            String displayName = jsonObject.optString("displayName", null);
+            requestBuilder = requestBuilder.setDisplayName(displayName);
+        }
+
+        if (jsonObject.has("photoURL")) {
+            String photoURL = jsonObject.optString("photoURL", null);
+            requestBuilder = requestBuilder.setPhotoUri(Uri.parse(photoURL));
+        }
+
+        return requestBuilder.build();
     }
 }
