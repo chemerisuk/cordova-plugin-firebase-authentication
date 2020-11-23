@@ -210,6 +210,30 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)updateProfile:(CDVInvokedUrlCommand*)command {
+    NSDictionary* options = [command argumentAtIndex:0];
+    FIRUserProfileChangeRequest* changeRequest = [[FIRAuth auth].currentUser profileChangeRequest];
+    if (options[@"displayName"]) {
+        changeRequest.displayName = options[@"displayName"];
+    }
+    if (options[@"photoURL"]) {
+        changeRequest.photoURL = options[@"photoURL"];
+    }
+    [changeRequest commitChangesWithCompletion:^(NSError *error) {
+        [self respondWith:error callbackId:command.callbackId];
+    }];
+}
+
+- (void)useEmulator:(CDVInvokedUrlCommand*)command {
+    NSString* host = [command.arguments objectAtIndex:0];
+    id port = [command.arguments objectAtIndex:1];
+
+    [[FIRAuth auth] useEmulatorWithHost:host port:[port intValue]];
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void) respondWith:(NSError*)error callbackId:(NSString*)callbackId {
     CDVPluginResult *pluginResult;
     if (error) {

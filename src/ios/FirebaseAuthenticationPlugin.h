@@ -21,6 +21,8 @@
 - (void)signOut:(CDVInvokedUrlCommand*)command;
 - (void)setLanguageCode:(CDVInvokedUrlCommand*)command;
 - (void)setAuthStateChanged:(CDVInvokedUrlCommand*)command;
+- (void)updateProfile:(CDVInvokedUrlCommand*)command;
+- (void)useEmulator:(CDVInvokedUrlCommand*)command;
 
 @property (strong, nonatomic) FIRAuthStateDidChangeListenerHandle authChangedHandler;
 
