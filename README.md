@@ -1,6 +1,6 @@
 # Cordova plugin for [Firebase Authentication](https://firebase.google.com/docs/auth/)
 
-[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
+[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![NPM total downloads][npm-total-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
 
 | [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)][donate-url] | Your help is appreciated. Create a PR, submit a bug or just grab me :beer: |
 |-|-|
@@ -80,15 +80,10 @@ NOTE: Android supports auto-verify and instant device verification. Therefore in
 _timeout_ [milliseconds] is the maximum amount of time you are willing to wait for SMS auto-retrieval to be completed by the library. Maximum allowed value is 2 minutes. Use 0 to disable SMS-auto-retrieval. If you specify a positive value less than 30 seconds, library will default to 30 seconds.
 
 ```js
-cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789", 30000).then(function(verificationId) {
-    // pass verificationId to signInWithVerificationId
+cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789", 30000).then(function(sendVerificationCode) {
+    // use sendVerificationCode to confirm 6-digit from SMS
+    sendVerificationCode("123456");
 });
-```
-
-### signInWithVerificationId(_verificationId_, _smsCode_)
-Asynchronously signs in using verificationId and 6-digit SMS code.
-```js
-cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456");
 ```
 
 ### signInAnonymously()
@@ -207,6 +202,7 @@ Sets languageCode to the app’s current language.
 [npm-url]: https://www.npmjs.com/package/cordova-plugin-firebase-authentication
 [npm-version]: https://img.shields.io/npm/v/cordova-plugin-firebase-authentication.svg
 [npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-firebase-authentication.svg
+[npm-total-downloads]: https://img.shields.io/npm/dt/cordova-plugin-firebase-authentication.svg?label=total+downloads
 [twitter-url]: https://twitter.com/chemerisuk
 [twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
 [donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FYAALBP25DP2G&source=url

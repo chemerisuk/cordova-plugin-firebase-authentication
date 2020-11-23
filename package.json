@@ -23,6 +23,7 @@
     "postversion": "git push && git push --tags"
   },
   "homepage": "https://github.com/chemerisuk/cordova-plugin-firebase-authentication#readme",
+  "funding": "https://github.com/chemerisuk/cordova-plugin-firebase-authentication?sponsor=1",
   "keywords": [
     "cordova",
     "firebase",
