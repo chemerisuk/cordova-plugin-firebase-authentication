@@ -210,6 +210,27 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
         callbackContext.success();
     }
 
+    @CordovaMethod
+    private void updateProfile(JSONObject params, CallbackContext callbackContext) {
+        FirebaseUser user = this.firebaseAuth.getCurrentUser();
+
+        if (user == null) {
+            callbackContext.error("User is not authorized");
+        }
+        else {
+            UserProfileChangeRequest request = createProfileChangeRequest(params);
+            user.updateProfile(request)
+                    .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
+        }
+    }
+
+    @CordovaMethod
+    private void useEmulator(String host, int port, CallbackContext callbackContext) {
+        firebaseAuth.useEmulator(host, port);
+
+        callbackContext.success();
+    }
+
     @Override
     public void onAuthStateChanged(FirebaseAuth auth) {
         if (this.authStateCallback != null) {
@@ -253,20 +274,6 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
             Log.e(TAG, "Fail to process getProfileData", e);
 
             return new PluginResult(PluginResult.Status.ERROR, e.getMessage());
-        }
-    }
-
-    @CordovaMethod
-    private void updateProfile(JSONObject params, CallbackContext callbackContext) {
-        FirebaseUser user = this.firebaseAuth.getCurrentUser();
-
-        if (user == null) {
-            callbackContext.error("User is not authorized");
-        }
-        else {
-            UserProfileChangeRequest request = createProfileChangeRequest(params);
-            user.updateProfile(request)
-                    .addOnCompleteListener(cordova.getActivity(), createCompleteListener(callbackContext));
         }
     }
 

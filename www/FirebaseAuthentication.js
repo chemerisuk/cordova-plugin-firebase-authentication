@@ -99,5 +99,10 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             exec(resolve, reject, PLUGIN_NAME, "updateProfile", [profile || {}]);
         });
+    },
+    useEmulator: function(host, port) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "useEmulator", [host, port]);
+        });
     }
 };
