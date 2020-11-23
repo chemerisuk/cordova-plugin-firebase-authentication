@@ -13,9 +13,9 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.FirebaseException;
@@ -159,8 +159,10 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
 
     @CordovaMethod
     private void verifyPhoneNumber(String phoneNumber, long timeoutMillis, final CallbackContext callbackContext) {
-        phoneAuthProvider.verifyPhoneNumber(phoneNumber, timeoutMillis, MILLISECONDS, cordova.getActivity(),
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        PhoneAuthOptions.Builder options = PhoneAuthOptions.newBuilder(firebaseAuth)
+                .setActivity(cordova.getActivity())
+                .setPhoneNumber(phoneNumber)
+                .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(PhoneAuthCredential credential) {
                         signInWithPhoneCredential(credential);
@@ -175,8 +177,13 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
                     public void onVerificationFailed(FirebaseException e) {
                         callbackContext.error(e.getMessage());
                     }
-                }
-        );
+                });
+
+        if (timeoutMillis > 0) {
+            options.setTimeout(timeoutMillis, MILLISECONDS);
+        }
+
+        PhoneAuthProvider.verifyPhoneNumber(options.build());
     }
 
     @CordovaMethod
