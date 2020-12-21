@@ -68,13 +68,12 @@ module.exports = {
     },
     verifyPhoneNumber: function(phoneNumber, timeoutMillis) {
         return new Promise(function(resolve, reject) {
-            exec(function(verificationId) {
-                resolve(function(code) {
-                    return new Promise(function(resolve, reject) {
-                        exec(resolve, reject, PLUGIN_NAME, "signInWithVerificationId", [verificationId, code]);
-                    });
-                });
-            }, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);
+            exec(resolve, reject, PLUGIN_NAME, "verifyPhoneNumber", [phoneNumber, timeoutMillis]);
+        });
+    },
+    signInWithVerificationId: function(verificationId, code) {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, PLUGIN_NAME, "signInWithVerificationId", [verificationId, code]);
         });
     },
     signInWithCustomToken: function (idToken) {

@@ -80,15 +80,19 @@ NOTE: Android supports auto-verify and instant device verification. Therefore in
 _timeout_ [milliseconds] is the maximum amount of time you are willing to wait for SMS auto-retrieval to be completed by the library. Maximum allowed value is 2 minutes. Use 0 to disable SMS-auto-retrieval. If you specify a positive value less than 30 seconds, library will default to 30 seconds.
 
 ```js
-cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789").then(function(checkVerificationCode) {
-    // use sendVerificationCode to confirm 6-digit from SMS
-    return checkVerificationCode("123456");
-}).then(function() {
-    console.log("phoner number verified successfully");
+cordova.plugins.firebase.auth.verifyPhoneNumber("+123456789").then(function(verificationId) {
+    // pass verificationId to signInWithVerificationId
 }).catch(function(err) {
     console.error("phoner number verification failed", err);
 });
 ```
+### signInWithVerificationId(_verificationId_, _smsCode_)
+Asynchronously signs in using verificationId and 6-digit SMS code.
+
+```js
+cordova.plugins.firebase.auth.signInWithVerificationId("djgfioerjg34", "123456");
+```
+
 
 ### signInAnonymously()
 Create and use temporary anonymous account to authenticate with Firebase. 
