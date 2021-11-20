@@ -29,6 +29,8 @@ import org.json.JSONObject;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import java.util.Map;
+
 
 public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implements AuthStateListener {
     private static final String TAG = "FirebaseAuthentication";
@@ -285,5 +287,25 @@ public class FirebaseAuthenticationPlugin extends ReflectiveCordovaPlugin implem
         }
 
         return requestBuilder.build();
+    }
+
+    @CordovaMethod(ExecutionThread.WORKER)
+    private void getClaims(boolean forceRefresh, CallbackContext callbackContext) {
+        FirebaseUser user = this.firebaseAuth.getCurrentUser();
+
+        if (user == null) {
+            callbackContext.error("User is not authorized");
+            return;
+        }
+
+        user.getIdToken(forceRefresh).addOnCompleteListener(cordova.getActivity(), task -> {
+            if (task.isSuccessful()) {
+                Map<String, Object> claims = task.getResult().getClaims();
+                JSONObject json = new JSONObject(claims);
+                callbackContext.success(json);
+            } else {
+                callbackContext.error(task.getException().getMessage());
+            }
+        });
     }
 }
