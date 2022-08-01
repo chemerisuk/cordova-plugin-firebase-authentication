@@ -9,25 +9,50 @@
 
 <!-- MarkdownTOC levels="2" autolink="true" -->
 
-- [Installation](#installation)
 - [Supported Platforms](#supported-platforms)
+- [Installation](#installation)
 - [User authorization](#user-authorization)
 - [Get/set user state](#getset-user-state)
 
 <!-- /MarkdownTOC -->
 
-## Installation
-
-    cordova plugin add cordova-plugin-firebase-authentication
-
-Use variables `ANDROID_FIREBASE_AUTH_VERSION` or `IOS_FIREBASE_AUTH_VERSION` to override dependency versions for Firebase SDKs.
-
-To use phone number authentication on iOS, your app must be able to receive silent APNs notifications from Firebase. For iOS 8.0 and above silent notifications do not require explicit user consent and is therefore unaffected by a user declining to receive APNs notifications in the app. Thus, the app does not need to request user permission to receive push notifications when implementing Firebase phone number auth.
-
 ## Supported Platforms
 
 - iOS
 - Android
+
+## Installation
+
+    cordova plugin add cordova-plugin-firebase-authentication
+
+Use variables `IOS_FIREBASE_POD_VERSION` and `ANDROID_FIREBASE_BOM_VERSION` to override dependency versions for Firebase SDKs:
+
+    $ cordova plugin add cordova-plugin-firebase-authentication \
+    --variable IOS_FIREBASE_POD_VERSION="9.3.0" \
+    --variable ANDROID_FIREBASE_BOM_VERSION="30.3.1"
+
+To use phone number authentication on iOS, your app must be able to receive silent APNs notifications from Firebase. For iOS 8.0 and above silent notifications do not require explicit user consent and is therefore unaffected by a user declining to receive APNs notifications in the app. Thus, the app does not need to request user permission to receive push notifications when implementing Firebase phone number auth.
+
+### Adding required configuration files
+
+Cordova supports `resource-file` tag for easy copying resources files. Firebase SDK requires `google-services.json` on Android and `GoogleService-Info.plist` on iOS platforms.
+
+1. Put `google-services.json` and/or `GoogleService-Info.plist` into the root directory of your Cordova project
+2. Add new tag for Android platform
+
+```xml
+<platform name="android">
+    ...
+    <resource-file src="google-services.json" target="app/google-services.json" />
+</platform>
+...
+<platform name="ios">
+    ...
+    <resource-file src="GoogleService-Info.plist" />
+</platform>
+```
+
+<!-- TypedocGenerated -->
 
 ## User authorization
 Unlike v1 of the plugin in v2 you must register `onAuthStateChanged` callback to be notified when  `signIn*` or `signOut` methods are completed. 
