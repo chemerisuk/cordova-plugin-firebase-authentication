@@ -133,6 +133,9 @@ exports.signInWithGoogle =
  * @param {string} accessToken Google Access token
  * @returns {Promise<void>} Callback when operation is completed
  *
+ * @see https://firebase.google.com/docs/auth/android/google-signin
+ * @see https://firebase.google.com/docs/auth/ios/google-signin
+ *
  * @example
  * // Below we use cordova-plugin-googleplus to trigger Google Login UI
  * window.plugins.googleplus.login({
@@ -194,6 +197,9 @@ exports.signInWithApple =
  * @param {string} idToken Apple's ID token string
  * @param {string} rawNonce Apple's raw token string
  * @returns {Promise<void>} Callback when operation is completed
+ *
+ * @see https://firebase.google.com/docs/auth/android/apple
+ * @see https://firebase.google.com/docs/auth/ios/apple
  *
  * @example
  * // below we use cordova-plugin-sign-in-with-apple to trigger Apple Login UI
