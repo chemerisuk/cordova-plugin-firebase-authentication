@@ -275,6 +275,11 @@ ___
 
 Uses Apples's <code>idToken</code> and <code>rawNonce</code> to sign-in into firebase account. For getting _idToken_ (_rawNonce_ is optional) you can use `cordova-plugin-sign-in-with-apple` (or any other cordova plugin for Apple Sign-In).
 
+**`See`**
+
+ - https://firebase.google.com/docs/auth/android/apple
+ - https://firebase.google.com/docs/auth/ios/apple
+
 **`Example`**
 
 ```ts
@@ -394,6 +399,11 @@ ___
 **signInWithGoogle**(`idToken`, `accessToken`): `Promise`<`void`\>
 
 Uses Google's <code>idToken</code> and <code>accessToken</code> to sign-in into firebase account.
+
+**`See`**
+
+ - https://firebase.google.com/docs/auth/android/google-signin
+ - https://firebase.google.com/docs/auth/ios/google-signin
 
 **`Example`**
 
