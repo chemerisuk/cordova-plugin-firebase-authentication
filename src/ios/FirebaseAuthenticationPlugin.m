@@ -1,6 +1,7 @@
 #import "FirebaseAuthenticationPlugin.h"
 
 @import FirebaseCore;
+@import FirebaseAuth;
 
 @implementation FirebaseAuthenticationPlugin
 
