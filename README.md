@@ -54,11 +54,11 @@
 
     cordova plugin add cordova-plugin-firebase-authentication
 
-Use variables `IOS_FIREBASE_POD_VERSION` and `ANDROID_FIREBASE_BOM_VERSION` to override dependency versions for Firebase SDKs:
+Use variables `IOS_FIREBASE_SDK_VERSION` and `ANDROID_FIREBASE_BOM_VERSION` to override dependency versions for Firebase SDKs:
 
     $ cordova plugin add cordova-plugin-firebase-authentication \
-    --variable IOS_FIREBASE_POD_VERSION="9.3.0" \
-    --variable ANDROID_FIREBASE_BOM_VERSION="30.3.1"
+    --variable IOS_FIREBASE_SDK_VERSION="12.19.1" \
+    --variable ANDROID_FIREBASE_BOM_VERSION="34.19.0"
 
 To use phone number authentication on iOS, your app must be able to receive silent APNs notifications from Firebase. For iOS 8.0 and above silent notifications do not require explicit user consent and is therefore unaffected by a user declining to receive APNs notifications in the app. Thus, the app does not need to request user permission to receive push notifications when implementing Firebase phone number auth.
 

@@ -20,8 +20,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <engine name="cordova-ios" version=">=6.0.0"/>
     </engines>
 
-    <platform name="ios">
-        <preference name="IOS_FIREBASE_POD_VERSION" default="9.3.0" />
+    <platform name="ios" package="swift">
+        <preference name="IOS_FIREBASE_SDK_VERSION" default="12.19.1" />
 
         <config-file target="config.xml" parent="/*">
             <feature name="FirebaseAuthentication">
@@ -38,13 +38,13 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="Firebase/Auth" spec="$IOS_FIREBASE_POD_VERSION" />
+                <pod name="Firebase/Auth" spec="$IOS_FIREBASE_SDK_VERSION" nospm="true"/>
             </pods>
         </podspec>
     </platform>
 
     <platform name="android">
-        <preference name="ANDROID_FIREBASE_BOM_VERSION" default="30.3.1" />
+        <preference name="ANDROID_FIREBASE_BOM_VERSION" default="34.19.0" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebaseAuthentication">
